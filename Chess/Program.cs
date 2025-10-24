@@ -1,6 +1,6 @@
+namespace data;
 
-
-publicabstract class Player
+public abstract class Player
 {
     private string firstname;
     private string lastname;
@@ -33,7 +33,7 @@ public abstract class Activity
 
 }
 
-public class Match : MatchData
+public class Match : MatchScore
 {
     private int player1;
     private int player2;
@@ -46,18 +46,28 @@ public class Match : MatchData
 
 }
 
-public class MatchData
+public class MatchScore : GradingMethod
 {
     private List<string> moves;
-    private List<int> results;
 
     private int winner;
 
-    public MatchData(List<string> moves, List<int> results, int winner)
+    private int grading;
+
+    public MatchScore(List<string> moves, int winner, int grading) : base(grading)
     {
         this.moves = moves;
-        this.results = results;
         this.winner = winner;
     }
 }
 
+public static class GradingMethod
+{
+
+    private int grading;
+
+    public GradingMethod
+    {
+        //grading method here, ELO in this case
+    }
+}   
