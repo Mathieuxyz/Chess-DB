@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace ChessDB.Model
 {
     public class Player
@@ -18,27 +21,9 @@ namespace ChessDB.Model
         // Inscriptions aux compétitions
         public List<Registration> Registrations { get; set; } = new List<Registration>();
 
-        // Parties jouées (comme blanc ou noir)
-        public List<Game> GamesAsWhite { get; set; } = new List<Game>();
-        public List<Game> GamesAsBlack { get; set; } = new List<Game>();
     }
 
-    public class Competition
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-
-        // Organisateur par exemple
-        public string Organizer { get; set; }
-
-        // Participations
-        public List<Registration> Registrations { get; set; } = new List<Registration>();
-
-        // Parties jouées dans cette compétition
-        public List<Game> Games { get; set; } = new List<Game>();
-    }
+    
 
     public class Registration
     {
