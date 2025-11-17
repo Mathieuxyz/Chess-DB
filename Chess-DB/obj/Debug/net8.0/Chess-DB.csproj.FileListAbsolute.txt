@@ -1,0 +1,8 @@
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.csproj.AssemblyReference.cache
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Avalonia\Resources.Inputs.cache
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Avalonia\resources
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.AssemblyInfoInputs.cache
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.AssemblyInfo.cs
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.csproj.CoreCompileInputs.cache
+C:\Users\franc\Downloads\Chess-DB\Chess-DB\obj\Debug\net8.0\Chess-DB.sourcelink.json
