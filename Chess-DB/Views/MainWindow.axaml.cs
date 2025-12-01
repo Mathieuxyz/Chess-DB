@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Thickness = Avalonia.Thickness;
 using CornerRadius = Avalonia.CornerRadius;
 
-namespace Chess_DB.Views
+namespace Chess_DB.Views.Pages
 {
     public partial class MainWindow : Window
     {
@@ -31,7 +31,7 @@ namespace Chess_DB.Views
 
                 Child = new TextBlock
                 {
-                    Text = "Chess Manager",
+                    Text = "Chess contest Manager",
                     Foreground = Brushes.White,
                     FontSize = 32,
                     FontWeight = FontWeight.Bold,
@@ -96,12 +96,40 @@ namespace Chess_DB.Views
 
         private Button CreateMenuButton(string text)
         {
-            return new Button
+            var btn = new Button
             {
                 Content = text,
                 Height = 50,
                 HorizontalContentAlignment = HorizontalAlignment.Left
             };
+            btn.Click += (_, _) => Navigate(text);
+
+            return btn;
+        }
+        
+        private Border _contentArea;
+        
+        private void Navigate(string pageName)
+        {
+            UserControl page = pageName switch
+            {
+                "Compétitions"    => new CompetitionsPage(),
+                "Joueurs"         => new PlayersPage(),
+                "Inscriptions"    => new InscriptionsPage(),
+                "Parties"         => new GamesPage(),
+                "Classements ELO" => new EloPage(),
+                _ => new UserControl
+                {
+                    Content = new TextBlock
+                    {
+                        Text = "Page inconnue",
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    }
+                }
+            };
+
+            _contentArea.Child = page;
         }
     }
 }
