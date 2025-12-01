@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Thickness = Avalonia.Thickness;
 using CornerRadius = Avalonia.CornerRadius;
 
-namespace Chess_DB.Views.Pages
+namespace Chess_DB.Views
 {
     public partial class MainWindow : Window
     {
@@ -52,7 +52,7 @@ namespace Chess_DB.Views.Pages
 
             // Ajout des boutons du menu
             sidebar.Children.Add(CreateMenuButton("Compétitions"));
-            sidebar.Children.Add(CreateMenuButton("Joueurs"));
+            sidebar.Children.Add(CreateMenuButton("Players"));
             sidebar.Children.Add(CreateMenuButton("Inscriptions"));
             sidebar.Children.Add(CreateMenuButton("Parties"));
             sidebar.Children.Add(CreateMenuButton("Classements ELO"));
@@ -113,11 +113,7 @@ namespace Chess_DB.Views.Pages
         {
             UserControl page = pageName switch
             {
-                "Compétitions"    => new CompetitionsPage(),
-                "Joueurs"         => new PlayersPage(),
-                "Inscriptions"    => new InscriptionsPage(),
-                "Parties"         => new GamesPage(),
-                "Classements ELO" => new EloPage(),
+                "Players"         => new PlayersPage(),
                 _ => new UserControl
                 {
                     Content = new TextBlock

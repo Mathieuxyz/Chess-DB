@@ -1465,19 +1465,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\mastr\\.nuget\\packages\\": {}
+    "C:\\Users\\Mathieu\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mastr\\Desktop\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
+      "projectUniqueName": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
       "projectName": "Chess-DB",
-      "projectPath": "C:\\Users\\mastr\\Desktop\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
-      "packagesPath": "C:\\Users\\mastr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mastr\\Desktop\\Chess-DB\\Chess-DB\\obj\\",
+      "projectPath": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
+      "packagesPath": "C:\\Users\\Mathieu\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\mastr\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Mathieu\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1548,7 +1548,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
