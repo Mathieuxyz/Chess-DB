@@ -6,6 +6,7 @@ namespace ChessDB.Model
     public class Player
     {
         public Guid Id { get; set; }
+        public string ShortId => Id.ToString("N")[..8];
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }

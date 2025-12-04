@@ -13,7 +13,7 @@ public partial class SelectablePlayer : ObservableObject
     public SelectablePlayer(Player player) => Player = player;
     public Player Player { get; }
     public Guid Id => Player.Id;
-    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.Id}";
+    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.ShortId}";
 
     [ObservableProperty]
     private bool isSelected;
@@ -132,7 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.Id}";
+    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.ShortId}";
 
     private void SetPage(
         string text,
@@ -236,20 +236,12 @@ public partial class MainWindowViewModel : ViewModelBase
         return Players.Where(p => regIds.Contains(p.Id));
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAddPlayer))]
     private void AddPlayer()
     {
-        if (string.IsNullOrWhiteSpace(NewFirstName)
-            || string.IsNullOrWhiteSpace(NewLastName)
-            || string.IsNullOrWhiteSpace(NewEmail)
-            || string.IsNullOrWhiteSpace(NewPhoneNumber))
-        {
-            return;
-        }
-
         var player = new Player
         {
-            Id = Guid.NewGuid(),
+            Id = GenerateUniquePlayerId(),
             FirstName = NewFirstName,
             LastName = NewLastName,
             Email = NewEmail,
@@ -271,8 +263,35 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     // For now, saving just reuses the add logic; replace with persistence later.
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAddPlayer))]
     private void SavePlayerForm() => AddPlayer();
+
+    private bool CanAddPlayer()
+    {
+        return !string.IsNullOrWhiteSpace(NewFirstName)
+               && !string.IsNullOrWhiteSpace(NewLastName)
+               && !string.IsNullOrWhiteSpace(NewEmail)
+               && !string.IsNullOrWhiteSpace(NewPhoneNumber);
+    }
+
+    partial void OnNewFirstNameChanged(string value) => AddPlayerCommand.NotifyCanExecuteChanged();
+    partial void OnNewLastNameChanged(string value) => AddPlayerCommand.NotifyCanExecuteChanged();
+    partial void OnNewEmailChanged(string value) => AddPlayerCommand.NotifyCanExecuteChanged();
+    partial void OnNewPhoneNumberChanged(string value) => AddPlayerCommand.NotifyCanExecuteChanged();
+
+    private Guid GenerateUniquePlayerId()
+    {
+        var existingShortIds = Players.Select(p => p.ShortId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        Guid candidate;
+        string shortId;
+        do
+        {
+            candidate = Guid.NewGuid();
+            shortId = candidate.ToString("N")[..8];
+        } while (existingShortIds.Contains(shortId));
+
+        return candidate;
+    }
 
     [RelayCommand]
     private void AddCompetition()

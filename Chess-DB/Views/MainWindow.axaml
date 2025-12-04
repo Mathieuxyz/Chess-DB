@@ -78,7 +78,7 @@
                                         <MultiBinding StringFormat="{}{0}, {1}, {2}">
                                             <Binding Path="LastName"/>
                                             <Binding Path="FirstName"/>
-                                            <Binding Path="Id"/>
+                                            <Binding Path="ShortId"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
@@ -141,15 +141,21 @@
                                 <Button Content="Add"
                                         MinWidth="100"
                                         Height="42"
-                                        Command="{Binding AddPlayerCommand}"/>
+                                        Command="{Binding AddPlayerCommand}"
+                                        Background="#2C3E50"
+                                        Foreground="White"/>
                                 <Button Content="Save form"
                                         MinWidth="120"
                                         Height="42"
-                                        Command="{Binding SavePlayerFormCommand}"/>
+                                        Command="{Binding SavePlayerFormCommand}"
+                                        Background="#2C3E50"
+                                        Foreground="White"/>
                                 <Button Content="Submit"
                                         MinWidth="120"
                                         Height="42"
-                                        Command="{Binding AddPlayerCommand}"/>
+                                        Command="{Binding AddPlayerCommand}"
+                                        Background="#2C3E50"
+                                        Foreground="White"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -333,7 +339,7 @@
                                                         <MultiBinding StringFormat="{}{0}, {1}, {2}">
                                                             <Binding Path="LastName"/>
                                                             <Binding Path="FirstName"/>
-                                                            <Binding Path="Id"/>
+                                                            <Binding Path="ShortId"/>
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
@@ -352,7 +358,7 @@
                                                         <MultiBinding StringFormat="{}{0}, {1}, {2}">
                                                             <Binding Path="LastName"/>
                                                             <Binding Path="FirstName"/>
-                                                            <Binding Path="Id"/>
+                                                            <Binding Path="ShortId"/>
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
