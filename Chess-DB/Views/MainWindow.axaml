@@ -39,11 +39,16 @@
                     </Style>
                 </StackPanel.Styles>
 
-                <Button Content="Compétitions"/>
-                <Button Content="Players"/>
-                <Button Content="Inscriptions"/>
-                <Button Content="Parties"/>
-                <Button Content="Classements ELO"/>
+                <Button Content="Competitions"
+                        Command="{Binding ShowCompetitionsCommand}"/>
+                <Button Content="Players"
+                        Command="{Binding ShowPlayersCommand}"/>
+                <Button Content="Registrations"
+                        Command="{Binding ShowRegistrationsCommand}"/>
+                <Button Content="Games"
+                        Command="{Binding ShowGamesCommand}"/>
+                <Button Content="ELO rankings"
+                        Command="{Binding ShowEloRankingsCommand}"/>
             </StackPanel>
         </Border>
 
@@ -52,7 +57,7 @@
                 Background="#ECF0F1"
                 CornerRadius="12"
                 Margin="20">
-            <TextBlock Text="Sélectionnez une action dans le menu"
+            <TextBlock Text="{Binding ContentText}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        FontSize="20"
