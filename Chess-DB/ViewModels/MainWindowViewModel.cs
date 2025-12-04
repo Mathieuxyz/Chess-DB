@@ -180,4 +180,8 @@ public partial class MainWindowViewModel : ViewModelBase
         NewPhoneNumber = string.Empty;
         NewElo = 1500;
     }
+
+    // For now, saving just reuses the add logic; replace with persistence later.
+    [RelayCommand]
+    private void SavePlayerForm() => AddPlayer();
 }
