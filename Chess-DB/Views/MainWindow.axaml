@@ -67,7 +67,8 @@
 
                 <!-- Simple columns of player boxes (placeholder data for now) -->
                 <ItemsControl ItemsSource="{Binding Players}"
-                              IsVisible="{Binding IsPlayersPage}">
+                              IsVisible="{Binding IsPlayersPage}"
+                              HorizontalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="2" />
