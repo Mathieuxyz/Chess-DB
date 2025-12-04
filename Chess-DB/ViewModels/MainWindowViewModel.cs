@@ -63,6 +63,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string newPhoneNumber = string.Empty;
     [ObservableProperty] private double newElo = 1500;
 
+    // Form fields for creating a competition.
+    [ObservableProperty] private string newCompetitionName = string.Empty;
+    [ObservableProperty] private DateTime newCompetitionStartDate = DateTime.Today;
+    [ObservableProperty] private DateTime newCompetitionEndDate = DateTime.Today.AddDays(1);
+
     public ObservableCollection<Player> Players { get; }
 
     public ObservableCollection<Competition> Competitions { get; }
@@ -260,4 +265,28 @@ public partial class MainWindowViewModel : ViewModelBase
     // For now, saving just reuses the add logic; replace with persistence later.
     [RelayCommand]
     private void SavePlayerForm() => AddPlayer();
+
+    [RelayCommand]
+    private void AddCompetition()
+    {
+        if (string.IsNullOrWhiteSpace(NewCompetitionName))
+        {
+            return;
+        }
+
+        var competition = new Competition
+        {
+            Name = NewCompetitionName.Trim(),
+            StartDate = NewCompetitionStartDate,
+            EndDate = NewCompetitionEndDate
+        };
+
+        Competitions.Add(competition);
+        SelectedCompetitionForRegistration = competition;
+
+        // Reset form
+        NewCompetitionName = string.Empty;
+        NewCompetitionStartDate = DateTime.Today;
+        NewCompetitionEndDate = DateTime.Today.AddDays(1);
+    }
 }
