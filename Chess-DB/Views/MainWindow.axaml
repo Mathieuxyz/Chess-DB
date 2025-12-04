@@ -8,7 +8,9 @@
         x:Class="Chess_DB.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Chess contest Manager">
+        Title="Chess contest Manager"
+        Width="1500"
+        Height="700">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
