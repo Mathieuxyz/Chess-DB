@@ -6,11 +6,22 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Chess_DB.ViewModels;
 using Chess_DB.Views;
+using Chess_DB.Services;
+using ChessDB.Model;
 
 namespace Chess_DB;
 
 public partial class App : Application
 {
+    private readonly DataManager _dataManager = DataFileService.LoadAsync().GetAwaiter().GetResult();
+    private readonly MainWindowViewModel _mainViewModel;
+    private bool _canClose;
+
+    public App()
+    {
+        _mainViewModel = new MainWindowViewModel(_dataManager);
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -25,8 +36,9 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = _mainViewModel,
             };
+            desktop.ShutdownRequested += OnShutdownRequested;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -42,6 +54,27 @@ public partial class App : Application
         foreach (var plugin in dataValidationPluginsToRemove)
         {
             BindingPlugins.DataValidators.Remove(plugin);
+        }
+    }
+
+    private async void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+    {
+        e.Cancel = !_canClose;
+
+        if (_canClose)
+        {
+            return;
+        }
+
+        _dataManager.Players = _mainViewModel.Players.ToList();
+        _dataManager.Competitions = _mainViewModel.Competitions.ToList();
+
+        await DataFileService.SaveAsync(_dataManager);
+
+        _canClose = true;
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
         }
     }
 }
