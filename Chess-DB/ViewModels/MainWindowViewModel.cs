@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using ChessDB.Model;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Chess_DB.ViewModels;
 
@@ -34,6 +35,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private Player? selectedBlackPlayer;
+
+    [ObservableProperty]
+    private Competition? selectedCompetitionForRegistration;
+
+    [ObservableProperty]
+    private Player? selectedPlayerForRegistration;
 
     // Selected player for the detail view.
     [ObservableProperty]
@@ -137,10 +144,9 @@ public partial class MainWindowViewModel : ViewModelBase
         },
     };
 
-    public ObservableCollection<Registration> Registrations { get; } = new()
-    {
+    public ObservableCollection<Registration> Registrations { get; } = new();
 
-    };
+    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.Id}";
 
     private void SetPage(
         string text,
@@ -174,14 +180,17 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowRegistrations()
     {
         SetPage("Registrations page", registrations: true);
+        SelectedCompetitionForRegistration ??= Competitions.FirstOrDefault();
+        SelectedPlayerForRegistration ??= Players.FirstOrDefault();
     }
 
     [RelayCommand]
     private void ShowGameDetail(Game game)
     {
         SelectedGame = game;
-        SelectedWhitePlayer = Players.FirstOrDefault();
-        SelectedBlackPlayer = Players.Skip(1).FirstOrDefault() ?? Players.FirstOrDefault();
+        SelectedWhitePlayer = GetRegisteredPlayersForCompetition(game.CompetitionId).FirstOrDefault();
+        SelectedBlackPlayer = GetRegisteredPlayersForCompetition(game.CompetitionId).Skip(1).FirstOrDefault()
+                               ?? SelectedWhitePlayer;
         SetPage(string.Empty, gameDetail: true);
     }
 
@@ -196,6 +205,39 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ConfirmGamePlayers()
     {
         // Placeholder: hook up persistence later.
+    }
+
+    [RelayCommand]
+    private void AddRegistration()
+    {
+        if (SelectedCompetitionForRegistration is null || SelectedPlayerForRegistration is null)
+        {
+            return;
+        }
+
+        // Avoid duplicates
+        if (SelectedCompetitionForRegistration.Registrations.Any(r => r.PlayerId == SelectedPlayerForRegistration.Id))
+        {
+            return;
+        }
+
+        var reg = new Registration
+        {
+            PlayerId = SelectedPlayerForRegistration.Id,
+            CompetitionId = SelectedCompetitionForRegistration.Id,
+            Status = RegistrationStatus.Active
+        };
+
+        SelectedCompetitionForRegistration.Registrations.Add(reg);
+        Registrations.Add(reg);
+    }
+
+    private IEnumerable<Player> GetRegisteredPlayersForCompetition(Guid competitionId)
+    {
+        var regIds = Competitions.FirstOrDefault(c => c.Id == competitionId)?
+            .Registrations.Select(r => r.PlayerId).ToHashSet() ?? new HashSet<Guid>();
+
+        return Players.Where(p => regIds.Contains(p.Id));
     }
 
     [RelayCommand]

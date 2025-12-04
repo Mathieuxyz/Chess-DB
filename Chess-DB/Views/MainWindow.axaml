@@ -80,7 +80,15 @@
                               SelectedItem="{Binding SelectedPlayer}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="model:Player">
-                                <TextBlock Text="{Binding FirstName}"/>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                            <Binding Path="LastName"/>
+                                            <Binding Path="FirstName"/>
+                                            <Binding Path="Id"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -216,31 +224,84 @@
                 </ItemsControl>
 
                 <!-- Registrations -->
-                <ItemsControl ItemsSource="{Binding Registrations}"
-                              IsVisible="{Binding IsRegistrationsPage}"
-                              HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="10"
-                                    Padding="12"
-                                    Background="White"
-                                    CornerRadius="8"
-                                    BorderBrush="#D0D7DE"
-                                    BorderThickness="1">
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="{Binding PlayerId, StringFormat='Player: {0}'}" FontSize="12" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding CompetitionId, StringFormat='Competition: {0}'}" FontSize="12"/>
-                                    <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Grid IsVisible="{Binding IsRegistrationsPage}"
+                      ColumnDefinitions="2*,1.2*"
+                      RowDefinitions="Auto,*"
+                      HorizontalAlignment="Stretch">
+                    <Border Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,0,0,10"
+                            Background="White"
+                            Padding="12"
+                            CornerRadius="8"
+                            BorderBrush="#D0D7DE"
+                            BorderThickness="1">
+                        <StackPanel Spacing="8" Orientation="Horizontal">
+                            <StackPanel Spacing="4" Width="280">
+                                <TextBlock Text="Competition" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Competitions}"
+                                          SelectedItem="{Binding SelectedCompetitionForRegistration}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Spacing="4" Width="280">
+                                <TextBlock Text="Player" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding Players}"
+                                          SelectedItem="{Binding SelectedPlayerForRegistration}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="model:Player">
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                                        <Binding Path="LastName"/>
+                                                        <Binding Path="FirstName"/>
+                                                        <Binding Path="Id"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <Button Content="Register"
+                                    Margin="8,24,0,0"
+                                    Command="{Binding AddRegistrationCommand}"
+                                    Height="36"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ItemsControl Grid.Row="1"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2"
+                                  ItemsSource="{Binding Registrations}"
+                                  HorizontalAlignment="Stretch">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="2" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="10"
+                                        Padding="12"
+                                        Background="White"
+                                        CornerRadius="8"
+                                        BorderBrush="#D0D7DE"
+                                        BorderThickness="1">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding PlayerId, StringFormat='Player: {0}'}" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding CompetitionId, StringFormat='Competition: {0}'}" FontSize="12"/>
+                                        <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
 
                 <!-- Game detail overlay -->
                 <Grid IsVisible="{Binding IsGameDetailPage}"
@@ -263,7 +324,15 @@
                                               SelectedItem="{Binding SelectedWhitePlayer}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate x:DataType="model:Player">
-                                                <TextBlock Text="{Binding FirstName}"/>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                                            <Binding Path="LastName"/>
+                                                            <Binding Path="FirstName"/>
+                                                            <Binding Path="Id"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
@@ -274,7 +343,15 @@
                                               SelectedItem="{Binding SelectedBlackPlayer}">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate x:DataType="model:Player">
-                                                <TextBlock Text="{Binding FirstName}"/>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                                            <Binding Path="LastName"/>
+                                                            <Binding Path="FirstName"/>
+                                                            <Binding Path="Id"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
