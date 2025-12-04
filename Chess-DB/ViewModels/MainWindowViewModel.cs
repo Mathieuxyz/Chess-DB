@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using ChessDB.Model;
 using System;
+using System.Linq;
 
 namespace Chess_DB.ViewModels;
 
@@ -15,6 +16,17 @@ public partial class MainWindowViewModel : ViewModelBase
     // Flag to know when to show the players list instead of text.
     [ObservableProperty]
     private bool isPlayersPage;
+
+    // Selected player for the detail view.
+    [ObservableProperty]
+    private Player? selectedPlayer;
+
+    // Form fields for adding a player.
+    [ObservableProperty] private string newFirstName = string.Empty;
+    [ObservableProperty] private string newLastName = string.Empty;
+    [ObservableProperty] private string newEmail = string.Empty;
+    [ObservableProperty] private string newPhoneNumber = string.Empty;
+    [ObservableProperty] private double newElo = 1500;
 
     [ObservableProperty]
     private bool isCompetitionsPage;
@@ -135,6 +147,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowPlayers()
     {
         SetPage(string.Empty, players: true);
+        SelectedPlayer ??= Players.FirstOrDefault();
     }
 
     [RelayCommand]
@@ -143,4 +156,28 @@ public partial class MainWindowViewModel : ViewModelBase
         SetPage("Registrations page", registrations: true);
     }
 
+    [RelayCommand]
+    private void AddPlayer()
+    {
+        var player = new Player
+        {
+            Id = Guid.NewGuid(),
+            FirstName = NewFirstName,
+            LastName = NewLastName,
+            Email = NewEmail,
+            PhoneNumber = NewPhoneNumber,
+            CurrentElo = NewElo,
+            EloRatings = new()
+        };
+
+        Players.Add(player);
+        SelectedPlayer = player;
+
+        // Reset form
+        NewFirstName = string.Empty;
+        NewLastName = string.Empty;
+        NewEmail = string.Empty;
+        NewPhoneNumber = string.Empty;
+        NewElo = 1500;
+    }
 }
