@@ -56,6 +56,8 @@
                 Background="#ECF0F1"
                 CornerRadius="12"
                 Margin="20">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
             <Grid>
                 <!-- Default text for non-card pages -->
                 <TextBlock Text="{Binding ContentText}"
@@ -231,6 +233,7 @@
                 </ItemsControl>
 
             </Grid>
+            </ScrollViewer>
         </Border>
     </Grid>
 

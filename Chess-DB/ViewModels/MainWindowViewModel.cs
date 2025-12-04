@@ -94,6 +94,12 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.WhiteWin, PlayedOn = DateTime.Today.AddDays(-1) },
                 new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
             }
         },
         new Competition
