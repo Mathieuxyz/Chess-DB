@@ -13,7 +13,7 @@ public partial class SelectablePlayer : ObservableObject
     public SelectablePlayer(Player player) => Player = player;
     public Player Player { get; }
     public Guid Id => Player.Id;
-    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.RegistrationCode ?? Player.Id.ToString()}";
+    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.Id}";
 
     [ObservableProperty]
     private bool isSelected;
@@ -132,7 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.RegistrationCode ?? p.Id.ToString()}";
+    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.Id}";
 
     private void SetPage(
         string text,
@@ -159,7 +159,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowPlayers()
     {
         SetPage(string.Empty, players: true);
-        SelectedPlayer ??= Players.FirstOrDefault();
+        SelectedPlayer = null;
     }
 
     [RelayCommand]
@@ -239,14 +239,17 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AddPlayer()
     {
-        var yearCode = (DateTime.UtcNow.Year % 100).ToString("00");
-        var nextSequence = Players.Count(p => p.RegistrationCode != null && p.RegistrationCode.StartsWith(yearCode)) + 1;
-        var registrationCode = $"{yearCode}{nextSequence:0000}";
+        if (string.IsNullOrWhiteSpace(NewFirstName)
+            || string.IsNullOrWhiteSpace(NewLastName)
+            || string.IsNullOrWhiteSpace(NewEmail)
+            || string.IsNullOrWhiteSpace(NewPhoneNumber))
+        {
+            return;
+        }
 
         var player = new Player
         {
             Id = Guid.NewGuid(),
-            RegistrationCode = registrationCode,
             FirstName = NewFirstName,
             LastName = NewLastName,
             Email = NewEmail,
@@ -257,7 +260,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Players.Add(player);
         RegistrablePlayers.Add(new SelectablePlayer(player));
-        SelectedPlayer = player;
+        // Do not auto-select; let user pick from the list.
 
         // Reset form
         NewFirstName = string.Empty;
