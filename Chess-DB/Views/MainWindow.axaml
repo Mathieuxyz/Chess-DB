@@ -146,6 +146,10 @@
                                         MinWidth="120"
                                         Height="42"
                                         Command="{Binding SavePlayerFormCommand}"/>
+                                <Button Content="Submit"
+                                        MinWidth="120"
+                                        Height="42"
+                                        Command="{Binding AddPlayerCommand}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

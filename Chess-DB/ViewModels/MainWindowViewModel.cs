@@ -13,7 +13,7 @@ public partial class SelectablePlayer : ObservableObject
     public SelectablePlayer(Player player) => Player = player;
     public Player Player { get; }
     public Guid Id => Player.Id;
-    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.Id}";
+    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.RegistrationCode ?? Player.Id.ToString()}";
 
     [ObservableProperty]
     private bool isSelected;
@@ -132,7 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.Id}";
+    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.RegistrationCode ?? p.Id.ToString()}";
 
     private void SetPage(
         string text,
@@ -239,9 +239,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AddPlayer()
     {
+        var yearCode = (DateTime.UtcNow.Year % 100).ToString("00");
+        var nextSequence = Players.Count(p => p.RegistrationCode != null && p.RegistrationCode.StartsWith(yearCode)) + 1;
+        var registrationCode = $"{yearCode}{nextSequence:0000}";
+
         var player = new Player
         {
             Id = Guid.NewGuid(),
+            RegistrationCode = registrationCode,
             FirstName = NewFirstName,
             LastName = NewLastName,
             Email = NewEmail,
