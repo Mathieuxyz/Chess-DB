@@ -57,11 +57,42 @@
                 Background="#ECF0F1"
                 CornerRadius="12"
                 Margin="20">
-            <TextBlock Text="{Binding ContentText}"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       FontSize="20"
-                       Foreground="#7F8C8D"/>
+            <Grid>
+                <!-- Default text for non-player pages -->
+                <TextBlock Text="{Binding ContentText}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontSize="20"
+                           Foreground="#7F8C8D"/>
+
+                <!-- Simple columns of player boxes (placeholder data for now) -->
+                <ItemsControl ItemsSource="{Binding Players}"
+                              IsVisible="{Binding IsPlayersPage}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="10"
+                                    Padding="12"
+                                    Background="White"
+                                    CornerRadius="8"
+                                    BorderBrush="#D0D7DE"
+                                    BorderThickness="1">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="{Binding FirstName}" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Text="{Binding LastName}" FontSize="14" />
+                                    <TextBlock Text="{Binding Email}" FontSize="12" Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding PhoneNumber}" FontSize="12" Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding CurrentElo, StringFormat='ELO: {0:F0}'}" FontSize="12" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
         </Border>
     </Grid>
 
