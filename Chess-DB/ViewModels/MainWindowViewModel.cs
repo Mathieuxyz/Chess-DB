@@ -22,9 +22,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool isRegistrationsPage;
 
-    [ObservableProperty]
-    private bool isGamesPage;
-
     // Temporary in-memory list to visualize the layout; real data wiring comes later.
     public ObservableCollection<Player> Players { get; } = new()
     {
@@ -76,37 +73,55 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<Competition> Competitions { get; } = new()
     {
-        new Competition { Name = "Open de Paris", StartDate = DateTime.Today.AddDays(7), EndDate = DateTime.Today.AddDays(9) },
-        new Competition { Name = "Tournoi Blitz", StartDate = DateTime.Today.AddDays(14), EndDate = DateTime.Today.AddDays(14) },
-        new Competition { Name = "Championnat Régional", StartDate = DateTime.Today.AddDays(30), EndDate = DateTime.Today.AddDays(33) },
+        new Competition
+        {
+            Name = "Championnat bel",
+            StartDate = DateTime.Today.AddDays(7),
+            EndDate = DateTime.Today.AddDays(9),
+            Games =
+            {
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.WhiteWin, PlayedOn = DateTime.Today.AddDays(-1) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-2) },
+            }
+        },
+        new Competition
+        {
+            Name = "Tournoi Blitz",
+            StartDate = DateTime.Today.AddDays(14),
+            EndDate = DateTime.Today.AddDays(14),
+            Games =
+            {
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.NotPlayedYet, PlayedOn = DateTime.Today.AddDays(1) },
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.BlackWin, PlayedOn = DateTime.Today },
+            }
+        },
+        new Competition
+        {
+            Name = "Championnat Régional",
+            StartDate = DateTime.Today.AddDays(30),
+            EndDate = DateTime.Today.AddDays(33),
+            Games =
+            {
+                new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), Result = GameResult.WhiteWin, PlayedOn = DateTime.Today.AddDays(-5) },
+            }
+        },
     };
 
     public ObservableCollection<Registration> Registrations { get; } = new()
     {
-        new Registration { PlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Status = RegistrationStatus.Active },
-        new Registration { PlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Status = RegistrationStatus.Pending },
-        new Registration { PlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Status = RegistrationStatus.Completed },
-    };
 
-    public ObservableCollection<Game> Games { get; } = new()
-    {
-        new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Result = GameResult.WhiteWin, PlayedOn = DateTime.Today.AddDays(-3) },
-        new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Result = GameResult.Draw, PlayedOn = DateTime.Today.AddDays(-1) },
-        new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Result = GameResult.NotPlayedYet, PlayedOn = DateTime.Today.AddDays(2) },
     };
 
     private void SetPage(
         string text,
         bool players = false,
         bool competitions = false,
-        bool registrations = false,
-        bool games = false)
+        bool registrations = false)
     {
         ContentText = text;
         IsPlayersPage = players;
         IsCompetitionsPage = competitions;
         IsRegistrationsPage = registrations;
-        IsGamesPage = games;
     }
 
     // Each command just swaps the displayed text for now.
@@ -128,9 +143,4 @@ public partial class MainWindowViewModel : ViewModelBase
         SetPage("Registrations page", registrations: true);
     }
 
-    [RelayCommand]
-    private void ShowGames()
-    {
-        SetPage("Games page", games: true);
-    }
 }
