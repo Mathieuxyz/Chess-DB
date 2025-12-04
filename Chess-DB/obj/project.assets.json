@@ -1470,11 +1470,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
+      "projectUniqueName": "C:\\Users\\Mathieu\\Downloads\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
       "projectName": "Chess-DB",
-      "projectPath": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
+      "projectPath": "C:\\Users\\Mathieu\\Downloads\\Chess-DB\\Chess-DB\\Chess-DB.csproj",
       "packagesPath": "C:\\Users\\Mathieu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mathieu\\RiderProjects\\Chess-DB\\Chess-DB\\obj\\",
+      "outputPath": "C:\\Users\\Mathieu\\Downloads\\Chess-DB\\Chess-DB\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mathieu\\AppData\\Roaming\\NuGet\\NuGet.Config"

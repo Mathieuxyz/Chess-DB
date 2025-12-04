@@ -3,18 +3,61 @@
         xmlns:vm="using:Chess_DB.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550"
         x:Class="Chess_DB.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Chess_DB">
+        Title="Chess contest Manager">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="220,*" Background="#2C3E50">
+        <Border Grid.ColumnSpan="2"
+                Background="#2C3E50"
+                Padding="20">
+            <TextBlock Text="Chess contest Manager"
+                       Foreground="White"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="#34495E">
+            <StackPanel Spacing="10"
+                        Margin="12">
+                <StackPanel.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Height" Value="50"/>
+                        <Setter Property="Background" Value="#2C3E50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="Padding" Value="14,0"/>
+                    </Style>
+                </StackPanel.Styles>
+
+                <Button Content="Compétitions"/>
+                <Button Content="Players"/>
+                <Button Content="Inscriptions"/>
+                <Button Content="Parties"/>
+                <Button Content="Classements ELO"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Background="#ECF0F1"
+                CornerRadius="12"
+                Margin="20">
+            <TextBlock Text="Sélectionnez une action dans le menu"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontSize="20"
+                       Foreground="#7F8C8D"/>
+        </Border>
+    </Grid>
 
 </Window>

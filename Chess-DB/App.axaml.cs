@@ -6,7 +6,6 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Chess_DB.ViewModels;
 using Chess_DB.Views;
-using Avalonia.Controls;
 
 namespace Chess_DB;
 
@@ -45,9 +44,4 @@ public partial class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
-}
-
-internal class MainWindow : Window
-{
-    public MainWindowViewModel DataContext { get; set; }
 }
