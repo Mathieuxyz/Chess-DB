@@ -166,31 +166,38 @@
                                     CornerRadius="8"
                                     BorderBrush="#D0D7DE"
                                     BorderThickness="1">
-                                <StackPanel Spacing="6">
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                                    <TextBlock Text="{Binding StartDate, StringFormat='Start: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                    <TextBlock Text="{Binding EndDate, StringFormat='End: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                    <TextBlock Text="Games" FontWeight="SemiBold" Margin="0,6,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding Games}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Padding="6"
-                                                        Margin="0,4,0,0"
-                                                        Background="#F7F9FA"
-                                                        BorderBrush="#E0E6ED"
-                                                        BorderThickness="1"
-                                                        CornerRadius="4">
-                                                    <StackPanel Spacing="2">
-                                                        <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12"/>
-                                                        <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12"/>
-                                                        <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12"/>
-                                                        <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
+                                <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="4">
+                                    <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding StartDate, StringFormat='Start: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                    <TextBlock Grid.Row="2" Text="{Binding EndDate, StringFormat='End: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
+
+                                    <StackPanel Grid.Row="3" Spacing="4">
+                                        <TextBlock Text="Games" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                        <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="4" Background="#F7F9FA">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl ItemsSource="{Binding Games}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Padding="6"
+                                                                    Margin="6"
+                                                                    Background="White"
+                                                                    BorderBrush="#D0D7DE"
+                                                                    BorderThickness="1"
+                                                                    CornerRadius="4">
+                                                                <StackPanel Spacing="2">
+                                                                    <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12"/>
+                                                                    <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12"/>
+                                                                    <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12"/>
+                                                                    <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
