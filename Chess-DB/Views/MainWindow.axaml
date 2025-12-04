@@ -59,13 +59,6 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
             <Grid>
-                <!-- Default text for non-card pages -->
-                <TextBlock Text="{Binding ContentText}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           FontSize="20"
-                           Foreground="#7F8C8D"/>
-
                 <!-- Players -->
                 <ScrollViewer IsVisible="{Binding IsPlayersPage}"
                               HorizontalScrollBarVisibility="Disabled"
@@ -225,82 +218,60 @@
 
                 <!-- Registrations -->
                 <Grid IsVisible="{Binding IsRegistrationsPage}"
-                      ColumnDefinitions="2*,1.2*"
-                      RowDefinitions="Auto,*"
+                      RowDefinitions="Auto,*,Auto"
                       HorizontalAlignment="Stretch">
                     <Border Grid.Row="0"
-                            Grid.ColumnSpan="2"
                             Margin="0,0,0,10"
                             Background="White"
                             Padding="12"
                             CornerRadius="8"
                             BorderBrush="#D0D7DE"
                             BorderThickness="1">
-                        <StackPanel Spacing="8" Orientation="Horizontal">
-                            <StackPanel Spacing="4" Width="280">
-                                <TextBlock Text="Competition" FontWeight="SemiBold"/>
-                                <ComboBox ItemsSource="{Binding Competitions}"
-                                          SelectedItem="{Binding SelectedCompetitionForRegistration}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Name}"/>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </StackPanel>
-                            <StackPanel Spacing="4" Width="280">
-                                <TextBlock Text="Player" FontWeight="SemiBold"/>
-                                <ComboBox ItemsSource="{Binding Players}"
-                                          SelectedItem="{Binding SelectedPlayerForRegistration}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate x:DataType="model:Player">
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0}, {1}, {2}">
-                                                        <Binding Path="LastName"/>
-                                                        <Binding Path="FirstName"/>
-                                                        <Binding Path="Id"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </StackPanel>
-                            <Button Content="Register"
-                                    Margin="8,24,0,0"
-                                    Command="{Binding AddRegistrationCommand}"
-                                    Height="36"/>
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Select competition" FontWeight="SemiBold"/>
+                            <ComboBox ItemsSource="{Binding Competitions}"
+                                      SelectedItem="{Binding SelectedCompetitionForRegistration}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                     </Border>
 
-                    <ItemsControl Grid.Row="1"
-                                  Grid.Column="0"
-                                  Grid.ColumnSpan="2"
-                                  ItemsSource="{Binding Registrations}"
-                                  HorizontalAlignment="Stretch">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="2" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="10"
-                                        Padding="12"
-                                        Background="White"
-                                        CornerRadius="8"
-                                        BorderBrush="#D0D7DE"
-                                        BorderThickness="1">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="{Binding PlayerId, StringFormat='Player: {0}'}" FontSize="12" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding CompetitionId, StringFormat='Competition: {0}'}" FontSize="12"/>
-                                        <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <Border Grid.Row="1"
+                            Background="White"
+                            Padding="12"
+                            CornerRadius="8"
+                            BorderBrush="#D0D7DE"
+                            BorderThickness="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding RegistrablePlayers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
+                                            <CheckBox IsChecked="{Binding IsSelected}"
+                                                      VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Display}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+
+                    <StackPanel Grid.Row="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Spacing="8"
+                                Margin="0,10,0,0">
+                        <Button Content="Submit registrations"
+                                Command="{Binding AddRegistrationCommand}"
+                                Height="36"
+                                MinWidth="160"/>
+                    </StackPanel>
                 </Grid>
 
                 <!-- Game detail overlay -->
@@ -355,6 +326,18 @@
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <StackPanel Width="200" Spacing="4">
+                                        <TextBlock Text="Piece" FontWeight="SemiBold"/>
+                                        <ComboBox ItemsSource="{Binding MovePieces}"
+                                                  SelectedItem="{Binding SelectedMovePiece}"/>
+                                    </StackPanel>
+                                    <StackPanel Width="200" Spacing="4">
+                                        <TextBlock Text="Destination" FontWeight="SemiBold"/>
+                                        <ComboBox ItemsSource="{Binding MoveSquares}"
+                                                  SelectedItem="{Binding SelectedMoveSquare}"/>
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <Button Content="Confirm"

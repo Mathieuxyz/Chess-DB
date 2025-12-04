@@ -8,6 +8,17 @@ using System.Collections.Generic;
 
 namespace Chess_DB.ViewModels;
 
+public partial class SelectablePlayer : ObservableObject
+{
+    public SelectablePlayer(Player player) => Player = player;
+    public Player Player { get; }
+    public Guid Id => Player.Id;
+    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.Id}";
+
+    [ObservableProperty]
+    private bool isSelected;
+}
+
 public partial class MainWindowViewModel : ViewModelBase
 {
     // Text shown in the main content area.
@@ -38,9 +49,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private Competition? selectedCompetitionForRegistration;
-
-    [ObservableProperty]
-    private Player? selectedPlayerForRegistration;
 
     // Selected player for the detail view.
     [ObservableProperty]
@@ -146,6 +154,53 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<Registration> Registrations { get; } = new();
 
+    public ObservableCollection<SelectablePlayer> RegistrablePlayers { get; } = new();
+
+    public ObservableCollection<string> MovePieces { get; } = new()
+    {
+        "King",
+        "Queen",
+        "Rook 1", "Rook 2",
+        "Bishop 1", "Bishop 2",
+        "Knight 1", "Knight 2",
+        "Pawn 1", "Pawn 2", "Pawn 3", "Pawn 4", "Pawn 5", "Pawn 6", "Pawn 7", "Pawn 8"
+    };
+
+    public ObservableCollection<string> MoveSquares { get; } = new()
+    {
+        "A1","A2","A3","A4","A5","A6","A7","A8",
+        "B1","B2","B3","B4","B5","B6","B7","B8",
+        "C1","C2","C3","C4","C5","C6","C7","C8",
+        "D1","D2","D3","D4","D5","D6","D7","D8",
+        "E1","E2","E3","E4","E5","E6","E7","E8",
+        "F1","F2","F3","F4","F5","F6","F7","F8",
+        "G1","G2","G3","G4","G5","G6","G7","G8",
+        "H1","H2","H3","H4","H5","H6","H7","H8"
+    };
+
+    [ObservableProperty]
+    private string? selectedMovePiece;
+
+    [ObservableProperty]
+    private string? selectedMoveSquare;
+
+    public MainWindowViewModel()
+    {
+        foreach (var p in Players)
+        {
+            RegistrablePlayers.Add(new SelectablePlayer(p));
+        }
+
+        // Ensure sample games reference their parent competition id
+        foreach (var competition in Competitions)
+        {
+            foreach (var game in competition.Games)
+            {
+                game.CompetitionId = competition.Id;
+            }
+        }
+    }
+
     public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.Id}";
 
     private void SetPage(
@@ -181,7 +236,10 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SetPage("Registrations page", registrations: true);
         SelectedCompetitionForRegistration ??= Competitions.FirstOrDefault();
-        SelectedPlayerForRegistration ??= Players.FirstOrDefault();
+        foreach (var sp in RegistrablePlayers)
+        {
+            sp.IsSelected = false;
+        }
     }
 
     [RelayCommand]
@@ -210,26 +268,33 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AddRegistration()
     {
-        if (SelectedCompetitionForRegistration is null || SelectedPlayerForRegistration is null)
+        if (SelectedCompetitionForRegistration is null)
         {
             return;
         }
 
-        // Avoid duplicates
-        if (SelectedCompetitionForRegistration.Registrations.Any(r => r.PlayerId == SelectedPlayerForRegistration.Id))
+        var selectedPlayers = RegistrablePlayers.Where(sp => sp.IsSelected).Select(sp => sp.Player).ToList();
+        foreach (var player in selectedPlayers)
         {
-            return;
+            if (SelectedCompetitionForRegistration.Registrations.Any(r => r.PlayerId == player.Id))
+                continue;
+
+            var reg = new Registration
+            {
+                PlayerId = player.Id,
+                CompetitionId = SelectedCompetitionForRegistration.Id,
+                Status = RegistrationStatus.Active
+            };
+
+            SelectedCompetitionForRegistration.Registrations.Add(reg);
+            Registrations.Add(reg);
         }
 
-        var reg = new Registration
+        // Clear selections after submit
+        foreach (var sp in RegistrablePlayers)
         {
-            PlayerId = SelectedPlayerForRegistration.Id,
-            CompetitionId = SelectedCompetitionForRegistration.Id,
-            Status = RegistrationStatus.Active
-        };
-
-        SelectedCompetitionForRegistration.Registrations.Add(reg);
-        Registrations.Add(reg);
+            sp.IsSelected = false;
+        }
     }
 
     private IEnumerable<Player> GetRegisteredPlayersForCompetition(Guid competitionId)
@@ -255,6 +320,7 @@ public partial class MainWindowViewModel : ViewModelBase
         };
 
         Players.Add(player);
+        RegistrablePlayers.Add(new SelectablePlayer(player));
         SelectedPlayer = player;
 
         // Reset form
