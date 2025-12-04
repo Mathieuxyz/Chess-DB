@@ -25,16 +25,53 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool isGamesPage;
 
-    [ObservableProperty]
-    private bool isEloPage;
-
     // Temporary in-memory list to visualize the layout; real data wiring comes later.
     public ObservableCollection<Player> Players { get; } = new()
     {
-        new Player { FirstName = "Alice", LastName = "Dubois", Email = "alice@example.com", PhoneNumber = "0600000001", CurrentElo = 1850 },
-        new Player { FirstName = "Bob", LastName = "Martin", Email = "bob@example.com", PhoneNumber = "0600000002", CurrentElo = 1720 },
-        new Player { FirstName = "Chloé", LastName = "Durand", Email = "chloe@example.com", PhoneNumber = "0600000003", CurrentElo = 1995 },
-        new Player { FirstName = "David", LastName = "Leroy", Email = "david@example.com", PhoneNumber = "0600000004", CurrentElo = 1620 },
+        new Player
+        {
+            FirstName = "Alice", LastName = "Dubois", Email = "alice@example.com", PhoneNumber = "0600000001", CurrentElo = 1850,
+            EloRatings = new()
+            {
+                new EloRating { Date = DateTime.Today.AddMonths(-3), Rating = 1780 },
+                new EloRating { Date = DateTime.Today.AddMonths(-2), Rating = 1820 },
+                new EloRating { Date = DateTime.Today.AddMonths(-1), Rating = 1845 },
+                new EloRating { Date = DateTime.Today, Rating = 1850 },
+            }
+        },
+        new Player
+        {
+            FirstName = "Bob", LastName = "Martin", Email = "bob@example.com", PhoneNumber = "0600000002", CurrentElo = 1720,
+            EloRatings = new()
+            {
+                new EloRating { Date = DateTime.Today.AddMonths(-3), Rating = 1650 },
+                new EloRating { Date = DateTime.Today.AddMonths(-2), Rating = 1680 },
+                new EloRating { Date = DateTime.Today.AddMonths(-1), Rating = 1705 },
+                new EloRating { Date = DateTime.Today, Rating = 1720 },
+            }
+        },
+        new Player
+        {
+            FirstName = "Chloé", LastName = "Durand", Email = "chloe@example.com", PhoneNumber = "0600000003", CurrentElo = 1995,
+            EloRatings = new()
+            {
+                new EloRating { Date = DateTime.Today.AddMonths(-3), Rating = 1900 },
+                new EloRating { Date = DateTime.Today.AddMonths(-2), Rating = 1930 },
+                new EloRating { Date = DateTime.Today.AddMonths(-1), Rating = 1970 },
+                new EloRating { Date = DateTime.Today, Rating = 1995 },
+            }
+        },
+        new Player
+        {
+            FirstName = "David", LastName = "Leroy", Email = "david@example.com", PhoneNumber = "0600000004", CurrentElo = 1620,
+            EloRatings = new()
+            {
+                new EloRating { Date = DateTime.Today.AddMonths(-3), Rating = 1500 },
+                new EloRating { Date = DateTime.Today.AddMonths(-2), Rating = 1540 },
+                new EloRating { Date = DateTime.Today.AddMonths(-1), Rating = 1580 },
+                new EloRating { Date = DateTime.Today, Rating = 1620 },
+            }
+        },
     };
 
     public ObservableCollection<Competition> Competitions { get; } = new()
@@ -58,28 +95,18 @@ public partial class MainWindowViewModel : ViewModelBase
         new Game { WhitePlayerId = Guid.NewGuid(), BlackPlayerId = Guid.NewGuid(), CompetitionId = Guid.NewGuid(), Result = GameResult.NotPlayedYet, PlayedOn = DateTime.Today.AddDays(2) },
     };
 
-    public ObservableCollection<EloRating> EloRatings { get; } = new()
-    {
-        new EloRating { Date = DateTime.Today.AddMonths(-3), Rating = 1800 },
-        new EloRating { Date = DateTime.Today.AddMonths(-2), Rating = 1850 },
-        new EloRating { Date = DateTime.Today.AddMonths(-1), Rating = 1900 },
-        new EloRating { Date = DateTime.Today, Rating = 1920 },
-    };
-
     private void SetPage(
         string text,
         bool players = false,
         bool competitions = false,
         bool registrations = false,
-        bool games = false,
-        bool elo = false)
+        bool games = false)
     {
         ContentText = text;
         IsPlayersPage = players;
         IsCompetitionsPage = competitions;
         IsRegistrationsPage = registrations;
         IsGamesPage = games;
-        IsEloPage = elo;
     }
 
     // Each command just swaps the displayed text for now.
@@ -110,6 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowEloRankings()
     {
-        SetPage("ELO rankings page", elo: true);
+        // ELO is now part of player profiles; show players.
+        SetPage("Player rankings", players: true);
     }
 }
