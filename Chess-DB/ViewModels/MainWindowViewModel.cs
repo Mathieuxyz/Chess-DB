@@ -133,11 +133,4 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SetPage("Games page", games: true);
     }
-
-    [RelayCommand]
-    private void ShowEloRankings()
-    {
-        // ELO is now part of player profiles; show players.
-        SetPage("Player rankings", players: true);
-    }
 }

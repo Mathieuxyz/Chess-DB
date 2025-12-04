@@ -47,8 +47,6 @@
                         Command="{Binding ShowRegistrationsCommand}"/>
                 <Button Content="Games"
                         Command="{Binding ShowGamesCommand}"/>
-                <Button Content="ELO rankings"
-                        Command="{Binding ShowEloRankingsCommand}"/>
             </StackPanel>
         </Border>
 
