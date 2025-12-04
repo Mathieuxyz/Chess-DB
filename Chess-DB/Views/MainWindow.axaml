@@ -183,19 +183,25 @@
                                                     <ItemsControl ItemsSource="{Binding Games}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Border Padding="6"
-                                                                        Margin="6"
-                                                                        Background="White"
-                                                                        BorderBrush="#D0D7DE"
-                                                                        BorderThickness="1"
-                                                                        CornerRadius="4">
-                                                                    <StackPanel Spacing="2">
-                                                                        <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12"/>
-                                                                        <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12"/>
-                                                                        <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12"/>
-                                                                        <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
-                                                                    </StackPanel>
-                                                                </Border>
+                                                                <Button Command="{Binding $parent[Window].DataContext.ShowGameDetailCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Background="Transparent"
+                                                                        BorderThickness="0"
+                                                                        Padding="0">
+                                                                    <Border Padding="6"
+                                                                            Margin="6"
+                                                                            Background="White"
+                                                                            BorderBrush="#D0D7DE"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="4">
+                                                                        <StackPanel Spacing="2">
+                                                                            <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12"/>
+                                                                            <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12"/>
+                                                                            <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12"/>
+                                                                            <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </Button>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
@@ -235,6 +241,58 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <!-- Game detail overlay -->
+                <Grid IsVisible="{Binding IsGameDetailPage}"
+                      Background="#CCFFFFFF">
+                    <Border Padding="20"
+                            Background="Transparent">
+                        <Border Background="White"
+                                CornerRadius="10"
+                                BorderBrush="#D0D7DE"
+                                BorderThickness="1"
+                                Padding="20"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="800">
+                            <StackPanel Spacing="14">
+                                <TextBlock Text="Game details" FontSize="22" FontWeight="Bold"/>
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="White player" FontWeight="SemiBold"/>
+                                    <ComboBox ItemsSource="{Binding Players}"
+                                              SelectedItem="{Binding SelectedWhitePlayer}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="model:Player">
+                                                <TextBlock Text="{Binding FirstName}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="Black player" FontWeight="SemiBold"/>
+                                    <ComboBox ItemsSource="{Binding Players}"
+                                              SelectedItem="{Binding SelectedBlackPlayer}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="model:Player">
+                                                <TextBlock Text="{Binding FirstName}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Button Content="Confirm"
+                                            Command="{Binding ConfirmGamePlayersCommand}"
+                                            Height="36"
+                                            MinWidth="120"/>
+                                    <Button Content="Back"
+                                            Command="{Binding BackToCompetitionsCommand}"
+                                            Height="36"
+                                            MinWidth="100"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </Grid>
 
             </Grid>
             </ScrollViewer>

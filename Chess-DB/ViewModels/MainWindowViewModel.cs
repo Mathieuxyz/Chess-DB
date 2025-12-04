@@ -17,6 +17,24 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool isPlayersPage;
 
+    [ObservableProperty]
+    private bool isCompetitionsPage;
+
+    [ObservableProperty]
+    private bool isRegistrationsPage;
+
+    [ObservableProperty]
+    private bool isGameDetailPage;
+
+    [ObservableProperty]
+    private Game? selectedGame;
+
+    [ObservableProperty]
+    private Player? selectedWhitePlayer;
+
+    [ObservableProperty]
+    private Player? selectedBlackPlayer;
+
     // Selected player for the detail view.
     [ObservableProperty]
     private Player? selectedPlayer;
@@ -27,12 +45,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string newEmail = string.Empty;
     [ObservableProperty] private string newPhoneNumber = string.Empty;
     [ObservableProperty] private double newElo = 1500;
-
-    [ObservableProperty]
-    private bool isCompetitionsPage;
-
-    [ObservableProperty]
-    private bool isRegistrationsPage;
 
     // Temporary in-memory list to visualize the layout; real data wiring comes later.
     public ObservableCollection<Player> Players { get; } = new()
@@ -134,12 +146,14 @@ public partial class MainWindowViewModel : ViewModelBase
         string text,
         bool players = false,
         bool competitions = false,
-        bool registrations = false)
+        bool registrations = false,
+        bool gameDetail = false)
     {
         ContentText = text;
         IsPlayersPage = players;
         IsCompetitionsPage = competitions;
         IsRegistrationsPage = registrations;
+        IsGameDetailPage = gameDetail;
     }
 
     // Each command just swaps the displayed text for now.
@@ -160,6 +174,28 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowRegistrations()
     {
         SetPage("Registrations page", registrations: true);
+    }
+
+    [RelayCommand]
+    private void ShowGameDetail(Game game)
+    {
+        SelectedGame = game;
+        SelectedWhitePlayer = Players.FirstOrDefault();
+        SelectedBlackPlayer = Players.Skip(1).FirstOrDefault() ?? Players.FirstOrDefault();
+        SetPage(string.Empty, gameDetail: true);
+    }
+
+    [RelayCommand]
+    private void BackToCompetitions()
+    {
+        SelectedGame = null;
+        SetPage("Competitions page", competitions: true);
+    }
+
+    [RelayCommand]
+    private void ConfirmGamePlayers()
+    {
+        // Placeholder: hook up persistence later.
     }
 
     [RelayCommand]
