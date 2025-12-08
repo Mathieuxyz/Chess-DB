@@ -19,6 +19,14 @@ public partial class SelectablePlayer : ObservableObject
     private bool isSelected;
 }
 
+public partial class MoveForm : ObservableObject
+{
+    [ObservableProperty] private Player? player;
+    [ObservableProperty] private string? piece;
+    [ObservableProperty] private string? square;
+    [ObservableProperty] private bool isSaved;
+}
+
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly DataManager _data;
@@ -65,8 +73,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     // Form fields for creating a competition.
     [ObservableProperty] private string newCompetitionName = string.Empty;
-    [ObservableProperty] private DateTime newCompetitionStartDate = DateTime.Today;
-    [ObservableProperty] private DateTime newCompetitionEndDate = DateTime.Today.AddDays(1);
+    [ObservableProperty] private DateTimeOffset? newCompetitionStartDate = DateTimeOffset.Now.Date;
+    [ObservableProperty] private DateTimeOffset? newCompetitionEndDate = DateTimeOffset.Now.Date.AddDays(1);
+    [ObservableProperty] private int newCompetitionMatchCount = 1;
 
     public ObservableCollection<Player> Players { get; }
 
@@ -75,6 +84,8 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<Registration> Registrations { get; }
 
     public ObservableCollection<SelectablePlayer> RegistrablePlayers { get; }
+    public ObservableCollection<Player> MovePlayers { get; } = new();
+    public ObservableCollection<MoveForm> MoveForms { get; } = new();
 
     public ObservableCollection<string> MovePieces { get; } = new()
     {
@@ -104,6 +115,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string? selectedMoveSquare;
 
+    [ObservableProperty]
+    private Player? selectedMovePlayer;
+
     public MainWindowViewModel() : this(new DataManager())
     {
     }
@@ -122,12 +136,22 @@ public partial class MainWindowViewModel : ViewModelBase
         // Ensure games carry their parent competition id after loading.
         foreach (var competition in Competitions)
         {
+            var idx = 1;
             foreach (var game in competition.Games)
             {
                 if (game.CompetitionId == Guid.Empty)
                 {
                     game.CompetitionId = competition.Id;
                 }
+                if (game.Moves is null)
+                {
+                    game.Moves = new System.Collections.ObjectModel.ObservableCollection<Move>();
+                }
+                if (game.MatchNumber <= 0)
+                {
+                    game.MatchNumber = idx;
+                }
+                idx++;
             }
         }
     }
@@ -177,9 +201,16 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowGameDetail(Game game)
     {
         SelectedGame = game;
-        SelectedWhitePlayer = GetRegisteredPlayersForCompetition(game.CompetitionId).FirstOrDefault();
-        SelectedBlackPlayer = GetRegisteredPlayersForCompetition(game.CompetitionId).Skip(1).FirstOrDefault()
-                               ?? SelectedWhitePlayer;
+
+        // Try to keep previously saved selections, fallback to registered players.
+        SelectedWhitePlayer = Players.FirstOrDefault(p => p.Id == game.WhitePlayerId)
+                              ?? GetRegisteredPlayersForCompetition(game.CompetitionId).FirstOrDefault();
+        SelectedBlackPlayer = Players.FirstOrDefault(p => p.Id == game.BlackPlayerId)
+                              ?? GetRegisteredPlayersForCompetition(game.CompetitionId).Skip(1).FirstOrDefault()
+                              ?? SelectedWhitePlayer;
+
+        RefreshMovePlayers();
+        InitializeMoveFormsFromGame(game);
         SetPage(string.Empty, gameDetail: true);
     }
 
@@ -193,7 +224,51 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ConfirmGamePlayers()
     {
-        // Placeholder: hook up persistence later.
+        if (SelectedGame is null || SelectedWhitePlayer is null || SelectedBlackPlayer is null)
+        {
+            return;
+        }
+
+        SelectedGame.WhitePlayerId = SelectedWhitePlayer.Id;
+        SelectedGame.BlackPlayerId = SelectedBlackPlayer.Id;
+        RefreshMovePlayers();
+    }
+
+    [RelayCommand]
+    private void AddMoveRow()
+    {
+        MoveForms.Add(new MoveForm());
+    }
+
+    [RelayCommand]
+    private void SaveMoves()
+    {
+        if (SelectedGame is null)
+        {
+            return;
+        }
+
+        var nextNumber = SelectedGame.Moves.Count + 1;
+        foreach (var form in MoveForms)
+        {
+            if (form.Player is null || string.IsNullOrWhiteSpace(form.Piece) || string.IsNullOrWhiteSpace(form.Square))
+            {
+                continue;
+            }
+
+            var notation = $"{form.Piece} {form.Square} ({form.Player.ShortId})";
+            SelectedGame.Moves.Add(new Move
+            {
+                MoveNumber = nextNumber++,
+                Notation = notation
+            });
+
+            form.IsSaved = true;
+        }
+
+        // After saving, start fresh with a single empty row.
+        MoveForms.Clear();
+        AddMoveRow();
     }
 
     [RelayCommand]
@@ -301,19 +376,57 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        var startDate = (NewCompetitionStartDate ?? DateTimeOffset.Now.Date).Date;
+        var endDate = (NewCompetitionEndDate ?? startDate.AddDays(1)).Date;
+        var matchCount = Math.Max(1, NewCompetitionMatchCount);
+
         var competition = new Competition
         {
             Name = NewCompetitionName.Trim(),
-            StartDate = NewCompetitionStartDate,
-            EndDate = NewCompetitionEndDate
+            StartDate = startDate,
+            EndDate = endDate
         };
+
+        for (var i = 1; i <= matchCount; i++)
+        {
+            competition.Games.Add(new Game
+            {
+                CompetitionId = competition.Id,
+                MatchNumber = i,
+                PlayedOn = startDate
+            });
+        }
 
         Competitions.Add(competition);
         SelectedCompetitionForRegistration = competition;
 
         // Reset form
         NewCompetitionName = string.Empty;
-        NewCompetitionStartDate = DateTime.Today;
-        NewCompetitionEndDate = DateTime.Today.AddDays(1);
+        NewCompetitionStartDate = DateTimeOffset.Now.Date;
+        NewCompetitionEndDate = DateTimeOffset.Now.Date.AddDays(1);
+        NewCompetitionMatchCount = 1;
+    }
+
+    private void RefreshMovePlayers()
+    {
+        MovePlayers.Clear();
+        if (SelectedWhitePlayer is not null)
+        {
+            MovePlayers.Add(SelectedWhitePlayer);
+        }
+
+        if (SelectedBlackPlayer is not null && SelectedBlackPlayer != SelectedWhitePlayer)
+        {
+            MovePlayers.Add(SelectedBlackPlayer);
+        }
+
+        SelectedMovePlayer = MovePlayers.FirstOrDefault();
+    }
+
+    private void InitializeMoveFormsFromGame(Game game)
+    {
+        MoveForms.Clear();
+        // Start with a single blank row for new moves.
+        AddMoveRow();
     }
 }
