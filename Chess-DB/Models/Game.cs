@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace ChessDB.Model
 {
@@ -9,11 +9,12 @@ namespace ChessDB.Model
         public Guid CompetitionId { get; set; }
         public Guid WhitePlayerId { get; set; }
         public Guid BlackPlayerId { get; set; }
+        public int MatchNumber { get; set; }
         public GameResult Result { get; set; } = GameResult.NotPlayedYet;
         public DateTime PlayedOn { get; set; } = DateTime.Now;
 
-        // Liste des coups joués
-        public List<Move> Moves { get; set; } = new();
+        // List of moves played
+        public ObservableCollection<Move> Moves { get; set; } = new();
     }
 
     public enum GameResult

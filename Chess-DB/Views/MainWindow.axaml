@@ -42,6 +42,8 @@
                     </Style>
                 </StackPanel.Styles>
 
+                <Button Content="Home"
+                        Command="{Binding ShowHomeCommand}"/>
                 <Button Content="Competitions"
                         Command="{Binding ShowCompetitionsCommand}"/>
                 <Button Content="Players"
@@ -59,6 +61,82 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
             <Grid>
+                <!-- Home -->
+                <Grid IsVisible="{Binding IsHomePage}"
+                      ColumnDefinitions="*,*"
+                      RowDefinitions="*"
+                      ColumnSpacing="16"
+                      Margin="0,0,0,0">
+                    <Border Grid.Column="0"
+                            Background="White"
+                            Padding="16"
+                            CornerRadius="10"
+                            BorderBrush="#D0D7DE"
+                            BorderThickness="1"
+                            Margin="0,0,8,0">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Upcoming competitions"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#1F2937"/>
+                            <ItemsControl ItemsSource="{Binding UpcomingCompetitions}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Competition">
+                                        <Border Padding="10"
+                                                Margin="0,4"
+                                                Background="#F7F9FA"
+                                                CornerRadius="6"
+                                                BorderBrush="#E0E6ED"
+                                                BorderThickness="1">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" Foreground="#1F2937"/>
+                                                <TextBlock Text="{Binding StartDate, StringFormat='Start: {0:d}'}" FontSize="12" Foreground="#374151"/>
+                                                <TextBlock Text="{Binding EndDate, StringFormat='End: {0:d}'}" FontSize="12" Foreground="#374151"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{Binding Registrations.Count, StringFormat='Players: {0}'}" FontSize="12" Foreground="#1F2937"/>
+                                                    <TextBlock Text="{Binding Games.Count, StringFormat='Matches: {0}'}" FontSize="12" Foreground="#1F2937"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1"
+                            Background="White"
+                            Padding="16"
+                            CornerRadius="10"
+                            BorderBrush="#D0D7DE"
+                            BorderThickness="1"
+                            Margin="8,0,0,0">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Top ELO players"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#1F2937"/>
+                            <ItemsControl ItemsSource="{Binding TopPlayers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Player">
+                                        <Border Padding="10"
+                                                Margin="0,4"
+                                                Background="#F7F9FA"
+                                                CornerRadius="6"
+                                                BorderBrush="#E0E6ED"
+                                                BorderThickness="1">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding LastName}" FontWeight="SemiBold" FontSize="15" Foreground="#1F2937"/>
+                                                <TextBlock Text="{Binding FirstName}" FontSize="13" Foreground="#1F2937"/>
+                                                <TextBlock Text="{Binding CurrentElo, StringFormat='ELO: {0:F0}'}" FontSize="12" Foreground="#1F2937"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
                 <!-- Players -->
                 <ScrollViewer IsVisible="{Binding IsPlayersPage}"
                               HorizontalScrollBarVisibility="Disabled"
@@ -98,21 +176,21 @@
                         <ContentControl Content="{Binding SelectedPlayer}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate x:DataType="model:Player">
-                                    <StackPanel Spacing="6">
+                                    <StackPanel Spacing="8">
                                         <StackPanel Spacing="2">
-                                            <TextBlock Text="{Binding FirstName}" FontWeight="Bold" FontSize="16"/>
-                                            <TextBlock Text="{Binding LastName}" FontSize="14" />
+                                            <TextBlock Text="{Binding FirstName}" FontWeight="Bold" FontSize="22" Foreground="#1F2937"/>
+                                            <TextBlock Text="{Binding LastName}" FontSize="18" FontWeight="SemiBold" Foreground="#1F2937"/>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Email}" FontSize="12" Foreground="#7F8C8D"/>
-                                        <TextBlock Text="{Binding PhoneNumber}" FontSize="12" Foreground="#7F8C8D"/>
-                                        <TextBlock Text="{Binding CurrentElo, StringFormat='ELO: {0:F0}'}" FontSize="12" FontWeight="SemiBold"/>
-                                        <TextBlock Text="ELO history" FontWeight="SemiBold" Margin="0,6,0,2"/>
+                                        <TextBlock Text="{Binding Email}" FontSize="14" Foreground="#1F2937"/>
+                                        <TextBlock Text="{Binding PhoneNumber}" FontSize="14" Foreground="#1F2937"/>
+                                        <TextBlock Text="{Binding CurrentElo, StringFormat='ELO: {0:F0}'}" FontSize="16" FontWeight="SemiBold" Foreground="#1F2937"/>
+                                        <TextBlock Text="ELO history" FontWeight="Bold" FontSize="14" Margin="0,8,0,2" Foreground="#1F2937"/>
                                         <ItemsControl ItemsSource="{Binding EloRatings}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Rating, StringFormat='- {0}'}"
-                                                               FontSize="12"
-                                                               Foreground="#7F8C8D"/>
+                                                               FontSize="13"
+                                                               Foreground="#1F2937"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -138,12 +216,6 @@
                             <TextBox Watermark="Phone" Text="{Binding NewPhoneNumber}" Height="40"/>
                             <TextBox Watermark="Current ELO" Text="{Binding NewElo}" Height="40"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Button Content="Add"
-                                        MinWidth="100"
-                                        Height="42"
-                                        Command="{Binding AddPlayerCommand}"
-                                        Background="#2C3E50"
-                                        Foreground="White"/>
                                 <Button Content="Save form"
                                         MinWidth="120"
                                         Height="42"
@@ -183,12 +255,13 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                                               HorizontalScrollBarVisibility="Disabled">
                                     <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="4">
-                                        <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                        <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="18" Foreground="#1F2937"/>
                                         <TextBlock Grid.Row="1" Text="{Binding StartDate, StringFormat='Start: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
                                         <TextBlock Grid.Row="2" Text="{Binding EndDate, StringFormat='End: {0:d}'}" FontSize="12" Foreground="#7F8C8D"/>
 
                                         <StackPanel Grid.Row="3" Spacing="4">
                                             <TextBlock Text="Games" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding Games.Count, StringFormat='Matches: {0}'}" FontSize="12" FontWeight="SemiBold" Foreground="#1F2937" Margin="0,0,0,4"/>
                                             <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="4" Background="#F7F9FA">
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                     <ItemsControl ItemsSource="{Binding Games}">
@@ -206,9 +279,10 @@
                                                                             BorderThickness="1"
                                                                             CornerRadius="4">
                                                                         <StackPanel Spacing="2">
-                                                                            <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12"/>
-                                                                            <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12"/>
-                                                                            <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12"/>
+                                                                            <TextBlock Text="{Binding MatchNumber, StringFormat='Match {0}'}" FontSize="12" FontWeight="SemiBold" Foreground="#1F2937"/>
+                                                                            <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12" Foreground="#1F2937"/>
+                                                                            <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12" Foreground="#1F2937"/>
+                                                                            <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12" Foreground="#1F2937"/>
                                                                             <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
                                                                         </StackPanel>
                                                                     </Border>
@@ -228,7 +302,7 @@
 
                 <!-- Registrations -->
                 <Grid IsVisible="{Binding IsRegistrationsPage}"
-                      RowDefinitions="Auto,Auto,*,Auto"
+                      RowDefinitions="Auto,Auto"
                       HorizontalAlignment="Stretch">
                     <Border Grid.Row="0"
                             Margin="0,0,0,10"
@@ -237,80 +311,83 @@
                             CornerRadius="8"
                             BorderBrush="#D0D7DE"
                             BorderThickness="1">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Select competition" FontWeight="SemiBold"/>
-                            <ComboBox ItemsSource="{Binding Competitions}"
-                                      SelectedItem="{Binding SelectedCompetitionForRegistration}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}"/>
-                                  </DataTemplate>
-                              </ComboBox.ItemTemplate>
-                            </ComboBox>
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Register players to a competition" FontWeight="Bold" FontSize="18" Foreground="#1F2937"/>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Select competition" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                <ComboBox ItemsSource="{Binding Competitions}"
+                                          SelectedItem="{Binding SelectedCompetitionForRegistration}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" Foreground="#1F2937" FontSize="14"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <TextBlock Text="Choose players" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937" Margin="0,4,0,0"/>
+                            <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="6" Background="#F7F9FA">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="220">
+                                    <ItemsControl ItemsSource="{Binding RegistrablePlayers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsSelected}"
+                                                          Content="{Binding Display}"
+                                                          Margin="8,4"
+                                                          FontSize="14"
+                                                          Foreground="#1F2937"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="Submit registrations"
+                                        Command="{Binding AddRegistrationCommand}"
+                                        Height="36"
+                                        MinWidth="180"
+                                        Background="#2C3E50"
+                                        Foreground="White"/>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 
                     <Border Grid.Row="1"
-                            Margin="0,0,0,10"
                             Background="White"
                             Padding="12"
                             CornerRadius="8"
                             BorderBrush="#D0D7DE"
                             BorderThickness="1">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Create competition" FontWeight="SemiBold"/>
+                            <TextBlock Text="Create competition" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
                             <TextBox Watermark="Name"
                                      Text="{Binding NewCompetitionName}"
-                                     Height="32"/>
+                                     Height="32"
+                                     FontSize="14"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <StackPanel Width="180" Spacing="4">
-                                    <TextBlock Text="Start date" FontWeight="SemiBold" FontSize="12"/>
-                                    <DatePicker SelectedDate="{Binding NewCompetitionStartDate}"/>
+                                    <TextBlock Text="Start date" FontWeight="SemiBold" FontSize="12" Foreground="#1F2937"/>
+                                    <DatePicker SelectedDate="{Binding NewCompetitionStartDate}" FontSize="14"/>
                                 </StackPanel>
                                 <StackPanel Width="180" Spacing="4">
-                                    <TextBlock Text="End date" FontWeight="SemiBold" FontSize="12"/>
-                                    <DatePicker SelectedDate="{Binding NewCompetitionEndDate}"/>
+                                    <TextBlock Text="End date" FontWeight="SemiBold" FontSize="12" Foreground="#1F2937"/>
+                                    <DatePicker SelectedDate="{Binding NewCompetitionEndDate}" FontSize="14"/>
+                                </StackPanel>
+                                <StackPanel Width="160" Spacing="4">
+                                    <TextBlock Text="Number of matches" FontWeight="SemiBold" FontSize="12" Foreground="#1F2937"/>
+                                    <NumericUpDown Minimum="1"
+                                                   Maximum="500"
+                                                   Value="{Binding NewCompetitionMatchCount}"
+                                                   Height="32"/>
                                 </StackPanel>
                             </StackPanel>
                             <Button Content="Add competition"
                                     Height="32"
                                     MinWidth="140"
-                                    Command="{Binding AddCompetitionCommand}"/>
+                                    Command="{Binding AddCompetitionCommand}"
+                                    Background="#2C3E50"
+                                    Foreground="White"/>
                         </StackPanel>
                     </Border>
-
-                    <Border Grid.Row="2"
-                            Background="White"
-                            Padding="12"
-                            CornerRadius="8"
-                            BorderBrush="#D0D7DE"
-                            BorderThickness="1">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding RegistrablePlayers}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
-                                            <CheckBox IsChecked="{Binding IsSelected}"
-                                                      VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding Display}"
-                                                       VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Border>
-
-                    <StackPanel Grid.Row="3"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Left"
-                                Spacing="8"
-                                Margin="0,10,0,0">
-                        <Button Content="Submit registrations"
-                                Command="{Binding AddRegistrationCommand}"
-                                Height="36"
-                                MinWidth="160"/>
-                    </StackPanel>
                 </Grid>
 
                 <!-- Game detail overlay -->
@@ -328,61 +405,124 @@
                                 Width="800">
                             <StackPanel Spacing="14">
                                 <TextBlock Text="Game details" FontSize="22" FontWeight="Bold"/>
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="White player" FontWeight="SemiBold"/>
-                                    <ComboBox ItemsSource="{Binding Players}"
-                                              SelectedItem="{Binding SelectedWhitePlayer}">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate x:DataType="model:Player">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
-                                                            <Binding Path="LastName"/>
-                                                            <Binding Path="FirstName"/>
-                                                            <Binding Path="ShortId"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </StackPanel>
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="Black player" FontWeight="SemiBold"/>
-                                    <ComboBox ItemsSource="{Binding Players}"
-                                              SelectedItem="{Binding SelectedBlackPlayer}">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate x:DataType="model:Player">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
-                                                            <Binding Path="LastName"/>
-                                                            <Binding Path="FirstName"/>
-                                                            <Binding Path="ShortId"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <StackPanel Width="200" Spacing="4">
-                                        <TextBlock Text="Piece" FontWeight="SemiBold"/>
-                                        <ComboBox ItemsSource="{Binding MovePieces}"
-                                                  SelectedItem="{Binding SelectedMovePiece}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                                    <StackPanel Width="240" Spacing="8">
+                                        <TextBlock Text="White player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                        <ComboBox ItemsSource="{Binding Players}"
+                                                  SelectedItem="{Binding SelectedWhitePlayer}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate x:DataType="model:Player">
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                                                <Binding Path="LastName"/>
+                                                                <Binding Path="FirstName"/>
+                                                                <Binding Path="ShortId"/>
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
                                     </StackPanel>
-                                    <StackPanel Width="200" Spacing="4">
-                                        <TextBlock Text="Destination" FontWeight="SemiBold"/>
-                                        <ComboBox ItemsSource="{Binding MoveSquares}"
-                                                  SelectedItem="{Binding SelectedMoveSquare}"/>
+                                    <StackPanel Width="240" Spacing="8">
+                                        <TextBlock Text="Black player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                        <ComboBox ItemsSource="{Binding Players}"
+                                                  SelectedItem="{Binding SelectedBlackPlayer}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate x:DataType="model:Player">
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                                                <Binding Path="LastName"/>
+                                                                <Binding Path="FirstName"/>
+                                                                <Binding Path="ShortId"/>
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel VerticalAlignment="Bottom">
+                                        <Button Content="Save players"
+                                                Command="{Binding ConfirmGamePlayersCommand}"
+                                                Height="36"
+                                                MinWidth="140"
+                                                Background="#2C3E50"
+                                                Foreground="White"/>
                                     </StackPanel>
                                 </StackPanel>
+                                <StackPanel Spacing="10">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Saved moves" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                        <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="4" Background="#F7F9FA" Padding="6">
+                                            <ScrollViewer MaxHeight="150">
+                                                <ItemsControl ItemsSource="{Binding SelectedGame.Moves}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Move">
+                                                            <TextBlock Text="{Binding Notation}" FontSize="13" Foreground="#1F2937"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding MoveForms}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:MoveForm" x:CompileBindings="False">
+                                                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4">
+                                                    <StackPanel Width="200" Spacing="4">
+                                                        <TextBlock Text="Piece" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MovePieces, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                  SelectedItem="{Binding Piece}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Width="200" Spacing="4">
+                                                        <TextBlock Text="Destination" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MoveSquares, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                  SelectedItem="{Binding Square}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Width="220" Spacing="4">
+                                                        <TextBlock Text="Move played by" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MovePlayers, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                  SelectedItem="{Binding Player}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate x:DataType="model:Player">
+                                                                    <TextBlock>
+                                                                        <TextBlock.Text>
+                                                                            <MultiBinding StringFormat="{}{0}, {1}">
+                                                                                <Binding Path="LastName"/>
+                                                                                <Binding Path="FirstName"/>
+                                                                            </MultiBinding>
+                                                                        </TextBlock.Text>
+                                                                    </TextBlock>
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Content="Add move row"
+                                                Command="{Binding AddMoveRowCommand}"
+                                                Height="32"
+                                                MinWidth="140"/>
+                                        <Button Content="Save moves"
+                                                Command="{Binding SaveMovesCommand}"
+                                                Height="32"
+                                                MinWidth="140"
+                                                Background="#2C3E50"
+                                                Foreground="White"/>
+                                    </StackPanel>
+                                </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <Button Content="Confirm"
-                                            Command="{Binding ConfirmGamePlayersCommand}"
-                                            Height="36"
-                                            MinWidth="120"/>
                                     <Button Content="Back"
                                             Command="{Binding BackToCompetitionsCommand}"
                                             Height="36"

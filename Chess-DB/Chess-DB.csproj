@@ -11,8 +11,6 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaXaml Update="App.axaml" />
-    <AvaloniaXaml Update="Views\MainWindow.axaml" />
   </ItemGroup>
 
   <ItemGroup>

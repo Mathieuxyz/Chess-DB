@@ -35,6 +35,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string contentText = "Select an action from the menu.";
 
+    [ObservableProperty]
+    private bool isHomePage = true;
+
     // Flag to know when to show the players list instead of text.
     [ObservableProperty]
     private bool isPlayersPage;
@@ -87,6 +90,17 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<Player> MovePlayers { get; } = new();
     public ObservableCollection<MoveForm> MoveForms { get; } = new();
 
+    public IEnumerable<Competition> UpcomingCompetitions =>
+        Competitions
+            .Where(c => c.StartDate >= DateTime.Today)
+            .OrderBy(c => c.StartDate)
+            .Take(5);
+
+    public IEnumerable<Player> TopPlayers =>
+        Players
+            .OrderByDescending(p => p.CurrentElo)
+            .Take(5);
+
     public ObservableCollection<string> MovePieces { get; } = new()
     {
         "King",
@@ -133,6 +147,9 @@ public partial class MainWindowViewModel : ViewModelBase
         RegistrablePlayers = new ObservableCollection<SelectablePlayer>(
             Players.Select(p => new SelectablePlayer(p)));
 
+        Players.CollectionChanged += (_, _) => RefreshComputedLists();
+        Competitions.CollectionChanged += (_, _) => RefreshComputedLists();
+
         // Ensure games carry their parent competition id after loading.
         foreach (var competition in Competitions)
         {
@@ -160,12 +177,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void SetPage(
         string text,
+        bool home = false,
         bool players = false,
         bool competitions = false,
         bool registrations = false,
         bool gameDetail = false)
     {
         ContentText = text;
+        IsHomePage = home;
         IsPlayersPage = players;
         IsCompetitionsPage = competitions;
         IsRegistrationsPage = registrations;
@@ -173,6 +192,11 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     // Each command just swaps the displayed text for now.
+    [RelayCommand]
+    private void ShowHome()
+    {
+        SetPage("Welcome", home: true);
+    }
     [RelayCommand]
     private void ShowCompetitions()
     {
@@ -335,6 +359,8 @@ public partial class MainWindowViewModel : ViewModelBase
         NewEmail = string.Empty;
         NewPhoneNumber = string.Empty;
         NewElo = 1500;
+
+        RefreshComputedLists();
     }
 
     // For now, saving just reuses the add logic; replace with persistence later.
@@ -405,6 +431,8 @@ public partial class MainWindowViewModel : ViewModelBase
         NewCompetitionStartDate = DateTimeOffset.Now.Date;
         NewCompetitionEndDate = DateTimeOffset.Now.Date.AddDays(1);
         NewCompetitionMatchCount = 1;
+
+        RefreshComputedLists();
     }
 
     private void RefreshMovePlayers()
@@ -428,5 +456,11 @@ public partial class MainWindowViewModel : ViewModelBase
         MoveForms.Clear();
         // Start with a single blank row for new moves.
         AddMoveRow();
+    }
+
+    private void RefreshComputedLists()
+    {
+        OnPropertyChanged(nameof(UpcomingCompetitions));
+        OnPropertyChanged(nameof(TopPlayers));
     }
 }

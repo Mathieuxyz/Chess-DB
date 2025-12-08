@@ -12,10 +12,12 @@ namespace Chess_DB.Services
     /// </summary>
     public static class DataFileService
     {
-        private static readonly string FilePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "ChessDB",
-            "data.json");
+        // Store data alongside the app to keep everything in-repo.
+        private static readonly string FilePath = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "..", "..", "..",
+            "Services",
+            "data.json"));
 
         private static readonly JsonSerializerOptions Options = new()
         {
@@ -28,6 +30,11 @@ namespace Chess_DB.Services
             try
             {
                 await using var fs = File.OpenRead(FilePath);
+                if (fs.Length == 0)
+                {
+                    return new DataManager();
+                }
+
                 var data = await JsonSerializer.DeserializeAsync<DataManager>(fs, Options);
                 return data ?? new DataManager();
             }
@@ -37,6 +44,11 @@ namespace Chess_DB.Services
             }
             catch (DirectoryNotFoundException)
             {
+                return new DataManager();
+            }
+            catch (JsonException)
+            {
+                // Corrupt or empty JSON: start fresh rather than crashing.
                 return new DataManager();
             }
         }
