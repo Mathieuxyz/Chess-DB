@@ -10,8 +10,17 @@ namespace ChessDB.Model
     {
         public List<Player> Players { get; set; } = new();
         public List<Competition> Competitions { get; set; } = new();
+        public ApplicationSettings Settings { get; set; } = new();
 
         private const string FilePath = "data.json";
+
+        public void EnsureDefaults()
+        {
+            Settings ??= new ApplicationSettings();
+            Settings.EnsureDefaults();
+            Players ??= new List<Player>();
+            Competitions ??= new List<Competition>();
+        }
 
         public void Save()
         {
@@ -21,6 +30,7 @@ namespace ChessDB.Model
                 ReferenceHandler = ReferenceHandler.IgnoreCycles
             };
 
+            EnsureDefaults();
             string json = JsonSerializer.Serialize(this, options);
             File.WriteAllText(FilePath, json);
         }
@@ -31,8 +41,10 @@ namespace ChessDB.Model
                 return new DataManager();
 
             string json = File.ReadAllText(FilePath);
-            return JsonSerializer.Deserialize<DataManager>(json)
+            var manager = JsonSerializer.Deserialize<DataManager>(json)
                    ?? new DataManager();
+            manager.EnsureDefaults();
+            return manager;
         }
 
         public void UpdateEloAfterGame(Game game)

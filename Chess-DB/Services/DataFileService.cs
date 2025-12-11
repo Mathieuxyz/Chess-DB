@@ -35,29 +35,38 @@ namespace Chess_DB.Services
                     return new DataManager();
                 }
 
-                var data = await JsonSerializer.DeserializeAsync<DataManager>(fs, Options);
-                return data ?? new DataManager();
+                var data = await JsonSerializer.DeserializeAsync<DataManager>(fs, Options) ?? new DataManager();
+                data.EnsureDefaults();
+                return data;
             }
             catch (FileNotFoundException)
             {
-                return new DataManager();
+                return CreateDefaultManager();
             }
             catch (DirectoryNotFoundException)
             {
-                return new DataManager();
+                return CreateDefaultManager();
             }
             catch (JsonException)
             {
                 // Corrupt or empty JSON: start fresh rather than crashing.
-                return new DataManager();
+                return CreateDefaultManager();
             }
         }
 
         public static async Task SaveAsync(DataManager data)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+            data.EnsureDefaults();
             await using var fs = File.Create(FilePath);
             await JsonSerializer.SerializeAsync(fs, data, Options);
+        }
+
+        private static DataManager CreateDefaultManager()
+        {
+            var manager = new DataManager();
+            manager.EnsureDefaults();
+            return manager;
         }
     }
 }

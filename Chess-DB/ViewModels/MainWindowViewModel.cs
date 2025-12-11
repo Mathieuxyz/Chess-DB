@@ -33,6 +33,12 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly DataManager _data;
 
+    public string ProgramName => _data.Settings.ProgramName;
+    public string RankingName => _data.Settings.RankingName;
+    public string TopRankingPlayersTitle => $"Top {RankingName} players";
+    public string RankingHistoryTitle => $"{RankingName} history";
+    public string CurrentRankingWatermark => $"Current {RankingName}";
+
     // Text shown in the main content area.
     [ObservableProperty]
     private string contentText = "Select an action from the menu.";
@@ -97,6 +103,8 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<SelectablePlayer> RegistrablePlayers { get; }
     public ObservableCollection<Player> MovePlayers { get; } = new();
     public ObservableCollection<MoveForm> MoveForms { get; } = new();
+    public ObservableCollection<string> MovePieces { get; }
+    public ObservableCollection<string> MoveSquares { get; }
 
     public IEnumerable<Competition> UpcomingCompetitions =>
         Competitions
@@ -108,28 +116,6 @@ public partial class MainWindowViewModel : ViewModelBase
         Players
             .OrderByDescending(p => p.CurrentElo)
             .Take(5);
-
-    public ObservableCollection<string> MovePieces { get; } = new()
-    {
-        "King",
-        "Queen",
-        "Rook 1", "Rook 2",
-        "Bishop 1", "Bishop 2",
-        "Knight 1", "Knight 2",
-        "Pawn 1", "Pawn 2", "Pawn 3", "Pawn 4", "Pawn 5", "Pawn 6", "Pawn 7", "Pawn 8"
-    };
-
-    public ObservableCollection<string> MoveSquares { get; } = new()
-    {
-        "A1","A2","A3","A4","A5","A6","A7","A8",
-        "B1","B2","B3","B4","B5","B6","B7","B8",
-        "C1","C2","C3","C4","C5","C6","C7","C8",
-        "D1","D2","D3","D4","D5","D6","D7","D8",
-        "E1","E2","E3","E4","E5","E6","E7","E8",
-        "F1","F2","F3","F4","F5","F6","F7","F8",
-        "G1","G2","G3","G4","G5","G6","G7","G8",
-        "H1","H2","H3","H4","H5","H6","H7","H8"
-    };
 
     [ObservableProperty]
     private string? selectedMovePiece;
@@ -147,6 +133,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(DataManager data)
     {
         _data = data;
+        _data.Settings.EnsureDefaults();
 
         Players = new ObservableCollection<Player>(_data.Players ?? new List<Player>());
         Competitions = new ObservableCollection<Competition>(_data.Competitions ?? new List<Competition>());
@@ -154,6 +141,8 @@ public partial class MainWindowViewModel : ViewModelBase
             Competitions.SelectMany(c => c.Registrations));
         RegistrablePlayers = new ObservableCollection<SelectablePlayer>(
             Players.Select(p => new SelectablePlayer(p)));
+        MovePieces = new ObservableCollection<string>(_data.Settings.MovePieces);
+        MoveSquares = new ObservableCollection<string>(_data.Settings.MoveSquares);
 
         Players.CollectionChanged += (_, _) => RefreshComputedLists();
         Competitions.CollectionChanged += (_, _) => RefreshComputedLists();
