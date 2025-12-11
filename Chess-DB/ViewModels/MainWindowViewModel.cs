@@ -5,6 +5,8 @@ using ChessDB.Model;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Chess_DB.Services;
 
 namespace Chess_DB.ViewModels;
 
@@ -50,6 +52,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool isGameDetailPage;
+
+    [ObservableProperty]
+    private bool isResetPage;
+
+    [ObservableProperty]
+    private bool showResetConfirmation;
 
     [ObservableProperty]
     private Game? selectedGame;
@@ -181,7 +189,8 @@ public partial class MainWindowViewModel : ViewModelBase
         bool players = false,
         bool competitions = false,
         bool registrations = false,
-        bool gameDetail = false)
+        bool gameDetail = false,
+        bool reset = false)
     {
         ContentText = text;
         IsHomePage = home;
@@ -189,6 +198,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IsCompetitionsPage = competitions;
         IsRegistrationsPage = registrations;
         IsGameDetailPage = gameDetail;
+        IsResetPage = reset;
     }
 
     // Each command just swaps the displayed text for now.
@@ -219,6 +229,41 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             sp.IsSelected = false;
         }
+    }
+
+    [RelayCommand]
+    private void ShowReset()
+    {
+        SetPage("Reset everything", reset: true);
+    }
+
+    [RelayCommand]
+    private void ToggleResetConfirmation()
+    {
+        ShowResetConfirmation = !ShowResetConfirmation;
+    }
+
+    [RelayCommand]
+    private async Task ResetEverything()
+    {
+        Players.Clear();
+        Competitions.Clear();
+        Registrations.Clear();
+        RegistrablePlayers.Clear();
+        MovePlayers.Clear();
+        MoveForms.Clear();
+        SelectedPlayer = null;
+        SelectedGame = null;
+        SelectedBlackPlayer = null;
+        SelectedWhitePlayer = null;
+
+        _data.Players.Clear();
+        _data.Competitions.Clear();
+
+        await DataFileService.SaveAsync(_data);
+
+        ShowResetConfirmation = false;
+        RefreshComputedLists();
     }
 
     [RelayCommand]
