@@ -569,120 +569,153 @@
                                 Width="800">
                             <StackPanel Spacing="14">
                                 <TextBlock Text="Game details" FontSize="22" FontWeight="Bold"/>
-                                <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                                    <StackPanel Width="240" Spacing="8">
-                                        <TextBlock Text="White player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                        <ComboBox ItemsSource="{Binding Players}"
-                                                  SelectedItem="{Binding SelectedWhitePlayer}">
-                                            <ComboBox.ItemTemplate>
-                                                <DataTemplate x:DataType="model:Player">
-                                                    <TextBlock>
-                                                        <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0}, {1}">
-                                                            <Binding Path="LastName"/>
-                                                            <Binding Path="FirstName"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                        </ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Width="240" Spacing="8">
-                                        <TextBlock Text="Black player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                        <ComboBox ItemsSource="{Binding Players}"
-                                                  SelectedItem="{Binding SelectedBlackPlayer}">
-                                            <ComboBox.ItemTemplate>
-                                                <DataTemplate x:DataType="model:Player">
-                                                    <TextBlock>
-                                                        <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0}, {1}">
-                                                            <Binding Path="LastName"/>
-                                                            <Binding Path="FirstName"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                        </ComboBox>
-                                    </StackPanel>
-                                    <StackPanel VerticalAlignment="Bottom">
-                                        <Button Content="Save players"
-                                                Command="{Binding ConfirmGamePlayersCommand}"
-                                                Height="36"
-                                                MinWidth="140"
-                                                Background="#2C3E50"
-                                                Foreground="White"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Spacing="10">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="Saved moves" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                        <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="4" Background="#F7F9FA" Padding="6">
-                                            <ScrollViewer MaxHeight="150">
-                                                <ItemsControl ItemsSource="{Binding SelectedGame.Moves}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate x:DataType="model:Move">
-                                                            <TextBlock Text="{Binding Notation}" FontSize="13" Foreground="#1F2937"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </ScrollViewer>
-                                        </Border>
-                                    </StackPanel>
-                                    <ItemsControl ItemsSource="{Binding MoveForms}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:MoveForm" x:CompileBindings="False">
-                                                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4">
-                                                    <StackPanel Width="200" Spacing="4">
-                                                        <TextBlock Text="Piece" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MovePieces, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                  SelectedItem="{Binding Piece}"/>
-                                                    </StackPanel>
-                                                    <StackPanel Width="200" Spacing="4">
-                                                        <TextBlock Text="Destination" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MoveSquares, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                  SelectedItem="{Binding Square}"/>
-                                                    </StackPanel>
-                                                    <StackPanel Width="220" Spacing="4">
-                                                        <TextBlock Text="Move played by" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
-                                                        <ComboBox ItemsSource="{Binding Path=DataContext.MovePlayers, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                  SelectedItem="{Binding Player}">
-                                                            <ComboBox.ItemTemplate>
-                                                                <DataTemplate x:DataType="model:Player">
-                                                                    <TextBlock>
-                                                                        <TextBlock.Text>
-                                                                            <MultiBinding StringFormat="{}{0}, {1}">
-                                                                                <Binding Path="LastName"/>
-                                                                                <Binding Path="FirstName"/>
-                                                                            </MultiBinding>
-                                                                        </TextBlock.Text>
-                                                                    </TextBlock>
+                                <StackPanel Spacing="12">
+                                    <!-- Players box -->
+                                    <Border Background="#F9FBFD" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8" Padding="14">
+                                        <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                                            <StackPanel Width="240" Spacing="8">
+                                                <TextBlock Text="White player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                <ComboBox ItemsSource="{Binding RegisteredGamePlayers}"
+                                                          SelectedItem="{Binding SelectedWhitePlayer}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Player">
+                                                            <TextBlock>
+                                                                <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0}, {1}">
+                                                                    <Binding Path="LastName"/>
+                                                                    <Binding Path="FirstName"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <StackPanel Width="240" Spacing="8">
+                                                <TextBlock Text="Black player" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                <ComboBox ItemsSource="{Binding RegisteredGamePlayers}"
+                                                          SelectedItem="{Binding SelectedBlackPlayer}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Player">
+                                                            <TextBlock>
+                                                                <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0}, {1}">
+                                                                    <Binding Path="LastName"/>
+                                                                    <Binding Path="FirstName"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <StackPanel VerticalAlignment="Bottom">
+                                                <Button Content="Save players"
+                                                        Command="{Binding ConfirmGamePlayersCommand}"
+                                                        Height="36"
+                                                        MinWidth="140"
+                                                        Background="#2C3E50"
+                                                        Foreground="White"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Moves box -->
+                                    <Border Background="#F9FBFD" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8" Padding="14">
+                                        <StackPanel Spacing="10">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="Saved moves" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                <Border BorderBrush="#E0E6ED" BorderThickness="1" CornerRadius="4" Background="#F7F9FA" Padding="6">
+                                                    <ScrollViewer MaxHeight="150">
+                                                        <ItemsControl ItemsSource="{Binding SelectedGame.Moves}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="model:Move">
+                                                                    <TextBlock Text="{Binding Notation}" FontSize="13" Foreground="#1F2937"/>
                                                                 </DataTemplate>
-                                                            </ComboBox.ItemTemplate>
-                                                        </ComboBox>
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Button Content="Add move row"
-                                                Command="{Binding AddMoveRowCommand}"
-                                                Height="32"
-                                                MinWidth="140"/>
-                                        <Button Content="Save moves"
-                                                Command="{Binding SaveMovesCommand}"
-                                                Height="32"
-                                                MinWidth="140"
-                                                Background="#2C3E50"
-                                                Foreground="White"/>
-                                    </StackPanel>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </StackPanel>
+                                            <ItemsControl ItemsSource="{Binding MoveForms}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:MoveForm" x:CompileBindings="False">
+                                                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4">
+                                                            <StackPanel Width="200" Spacing="4">
+                                                                <TextBlock Text="Piece" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                                <ComboBox ItemsSource="{Binding Path=DataContext.MovePieces, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                          SelectedItem="{Binding Piece}"/>
+                                                            </StackPanel>
+                                                            <StackPanel Width="200" Spacing="4">
+                                                                <TextBlock Text="Destination" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                                <ComboBox ItemsSource="{Binding Path=DataContext.MoveSquares, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                          SelectedItem="{Binding Square}"/>
+                                                            </StackPanel>
+                                                            <StackPanel Width="220" Spacing="4">
+                                                                <TextBlock Text="Move played by" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                                <ComboBox ItemsSource="{Binding Path=DataContext.MovePlayers, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                          SelectedItem="{Binding Player}">
+                                                                    <ComboBox.ItemTemplate>
+                                                                        <DataTemplate x:DataType="model:Player">
+                                                                            <TextBlock>
+                                                                                <TextBlock.Text>
+                                                                                    <MultiBinding StringFormat="{}{0}, {1}">
+                                                                                        <Binding Path="LastName"/>
+                                                                                        <Binding Path="FirstName"/>
+                                                                                    </MultiBinding>
+                                                                                </TextBlock.Text>
+                                                                            </TextBlock>
+                                                                        </DataTemplate>
+                                                                    </ComboBox.ItemTemplate>
+                                                                </ComboBox>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Button Content="Add move row"
+                                                        Command="{Binding AddMoveRowCommand}"
+                                                        Height="32"
+                                                        MinWidth="140"/>
+                                                <Button Content="Save moves"
+                                                        Command="{Binding SaveMovesCommand}"
+                                                        Height="32"
+                                                        MinWidth="140"
+                                                        Background="#2C3E50"
+                                                        Foreground="White"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Winner box -->
+                                    <Border Background="#F9FBFD" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8" Padding="14">
+                                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                            <StackPanel Width="240" Spacing="4">
+                                                <TextBlock Text="Winner" FontWeight="SemiBold" FontSize="16" Foreground="#1F2937"/>
+                                                <ComboBox ItemsSource="{Binding WinnerChoices}"
+                                                          SelectedItem="{Binding SelectedWinnerChoice}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:WinnerChoice" x:CompileBindings="False">
+                                                            <TextBlock Text="{Binding Label}"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </StackPanel>
+                                            <Button Content="Save winner"
+                                                    Command="{Binding SaveGameResultCommand}"
+                                                    Height="36"
+                                                    MinWidth="140"
+                                                    Background="#2C3E50"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Bottom"/>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <Button Content="Back"

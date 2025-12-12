@@ -29,6 +29,12 @@ public partial class MoveForm : ObservableObject
     [ObservableProperty] private bool isSaved;
 }
 
+public class WinnerChoice
+{
+    public GameResult Result { get; set; }
+    public string Label { get; set; } = string.Empty;
+}
+
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly DataManager _data;
@@ -84,6 +90,15 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private Player? selectedPlayer;
 
+    // Winner selector options for a game.
+    public ObservableCollection<WinnerChoice> WinnerChoices { get; } = new();
+
+    [ObservableProperty]
+    private WinnerChoice? selectedWinnerChoice;
+
+    [ObservableProperty]
+    private GameResult selectedGameResult = GameResult.NotPlayedYet;
+
     // Form fields for adding a player.
     [ObservableProperty] private string newFirstName = string.Empty;
     [ObservableProperty] private string newLastName = string.Empty;
@@ -104,6 +119,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<Registration> Registrations { get; }
 
     public ObservableCollection<SelectablePlayer> RegistrablePlayers { get; }
+    public ObservableCollection<Player> RegisteredGamePlayers { get; } = new();
     public ObservableCollection<Player> MovePlayers { get; } = new();
     public ObservableCollection<MoveForm> MoveForms { get; } = new();
     public ObservableCollection<string> MovePieces { get; }
@@ -362,16 +378,22 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowGameDetail(Game game)
     {
         SelectedGame = game;
+        SelectedGameResult = game.Result;
+
+        var registeredPlayers = GetRegisteredPlayersForCompetition(game.CompetitionId).ToList();
+        RefreshRegisteredPlayersForSelectedGame(registeredPlayers);
 
         // Try to keep previously saved selections, fallback to registered players.
-        SelectedWhitePlayer = Players.FirstOrDefault(p => p.Id == game.WhitePlayerId)
-                              ?? GetRegisteredPlayersForCompetition(game.CompetitionId).FirstOrDefault();
-        SelectedBlackPlayer = Players.FirstOrDefault(p => p.Id == game.BlackPlayerId)
-                              ?? GetRegisteredPlayersForCompetition(game.CompetitionId).Skip(1).FirstOrDefault()
+        SelectedWhitePlayer = registeredPlayers.FirstOrDefault(p => p.Id == game.WhitePlayerId)
+                              ?? registeredPlayers.FirstOrDefault();
+        SelectedBlackPlayer = registeredPlayers.FirstOrDefault(p => p.Id == game.BlackPlayerId)
+                              ?? registeredPlayers.Skip(1).FirstOrDefault()
                               ?? SelectedWhitePlayer;
 
         RefreshMovePlayers();
         InitializeMoveFormsFromGame(game);
+        UpdateWinnerChoices();
+        SelectedWinnerChoice = WinnerChoices.FirstOrDefault(c => c.Result == game.Result);
         SetPage(string.Empty, gameDetail: true);
     }
 
@@ -393,6 +415,20 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedGame.WhitePlayerId = SelectedWhitePlayer.Id;
         SelectedGame.BlackPlayerId = SelectedBlackPlayer.Id;
         RefreshMovePlayers();
+        _ = PersistDataAsync();
+    }
+
+    [RelayCommand]
+    private void SaveGameResult()
+    {
+        if (SelectedGame is null)
+        {
+            return;
+        }
+
+        var resultToSave = SelectedWinnerChoice?.Result ?? GameResult.NotPlayedYet;
+        SelectedGame.Result = resultToSave;
+        SelectedGameResult = resultToSave;
         _ = PersistDataAsync();
     }
 
@@ -594,6 +630,18 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedMovePlayer = MovePlayers.FirstOrDefault();
     }
 
+    partial void OnSelectedWhitePlayerChanged(Player? value)
+    {
+        RefreshMovePlayers();
+        UpdateWinnerChoices();
+    }
+
+    partial void OnSelectedBlackPlayerChanged(Player? value)
+    {
+        RefreshMovePlayers();
+        UpdateWinnerChoices();
+    }
+
     private void InitializeMoveFormsFromGame(Game game)
     {
         MoveForms.Clear();
@@ -605,6 +653,53 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(UpcomingCompetitions));
         OnPropertyChanged(nameof(TopPlayers));
+    }
+
+    private void RefreshRegisteredPlayersForSelectedGame(IEnumerable<Player> registeredPlayers)
+    {
+        RegisteredGamePlayers.Clear();
+        foreach (var player in registeredPlayers)
+        {
+            RegisteredGamePlayers.Add(player);
+        }
+
+        if (SelectedWhitePlayer is not null && !RegisteredGamePlayers.Contains(SelectedWhitePlayer))
+        {
+            SelectedWhitePlayer = RegisteredGamePlayers.FirstOrDefault();
+        }
+
+        if (SelectedBlackPlayer is not null && !RegisteredGamePlayers.Contains(SelectedBlackPlayer))
+        {
+            SelectedBlackPlayer = RegisteredGamePlayers.Skip(1).FirstOrDefault() ?? SelectedWhitePlayer;
+        }
+    }
+
+    private void UpdateWinnerChoices()
+    {
+        WinnerChoices.Clear();
+
+        if (SelectedWhitePlayer is not null)
+        {
+            WinnerChoices.Add(new WinnerChoice
+            {
+                Result = GameResult.WhiteWin,
+                Label = $"{SelectedWhitePlayer.LastName}, {SelectedWhitePlayer.FirstName} (White)"
+            });
+        }
+
+        if (SelectedBlackPlayer is not null)
+        {
+            WinnerChoices.Add(new WinnerChoice
+            {
+                Result = GameResult.BlackWin,
+                Label = $"{SelectedBlackPlayer.LastName}, {SelectedBlackPlayer.FirstName} (Black)"
+            });
+        }
+
+        // Keep selection if still available; otherwise pick matching result or nothing.
+        var current = WinnerChoices.FirstOrDefault(c => c.Result == SelectedWinnerChoice?.Result)
+                      ?? WinnerChoices.FirstOrDefault(c => c.Result == SelectedGameResult);
+        SelectedWinnerChoice = current;
     }
 
     private void LoadSettingsEditors()
