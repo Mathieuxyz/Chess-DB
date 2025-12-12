@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Chess_DB.ViewModels"
         xmlns:model="using:ChessDB.Model"
+        xmlns:conv="using:Chess_DB.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550"
@@ -15,6 +16,10 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+
+    <Window.Resources>
+        <conv:PlayerNameLabelConverter x:Key="PlayerNameLabelConverter"/>
+    </Window.Resources>
 
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="220,*" Background="#2C3E50">
         <Border Grid.ColumnSpan="2"
@@ -37,6 +42,7 @@
                         <Setter Property="Background" Value="#2C3E50"/>
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                         <Setter Property="Padding" Value="14,0"/>
                     </Style>
@@ -50,7 +56,7 @@
                         Command="{Binding ShowPlayersCommand}"/>
                 <Button Content="Registrations"
                         Command="{Binding ShowRegistrationsCommand}"/>
-                <Button Content="Reset Everything"
+                <Button Content="Settings"
                         Command="{Binding ShowResetCommand}"/>
             </StackPanel>
         </Border>
@@ -162,10 +168,9 @@
                             <DataTemplate x:DataType="model:Player">
                                 <TextBlock>
                                     <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}, {1}, {2}">
+                                        <MultiBinding StringFormat="{}{0}, {1}">
                                             <Binding Path="LastName"/>
                                             <Binding Path="FirstName"/>
-                                            <Binding Path="ShortId"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
@@ -225,7 +230,11 @@
                             BorderBrush="#D0D7DE"
                             BorderThickness="1">
                         <StackPanel Spacing="12" Width="360">
-                            <TextBlock Text="Add player" FontWeight="Bold" FontSize="18"/>
+                            <TextBlock Text="Player registration form"
+                                       FontWeight="Bold"
+                                       FontSize="20"
+                                       Foreground="#1F2937"
+                                       Margin="0,0,0,4"/>
                             <TextBox Watermark="First name" Text="{Binding NewFirstName}" Height="40"/>
                             <TextBox Watermark="Last name" Text="{Binding NewLastName}" Height="40"/>
                             <TextBox Watermark="Email" Text="{Binding NewEmail}" Height="40"/>
@@ -282,7 +291,7 @@
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                     <ItemsControl ItemsSource="{Binding Games}">
                                                         <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
+                                                            <DataTemplate x:CompileBindings="False">
                                                                 <Button Command="{Binding $parent[Window].DataContext.ShowGameDetailCommand}"
                                                                         CommandParameter="{Binding}"
                                                                         Background="Transparent"
@@ -297,9 +306,25 @@
                                                                         <StackPanel Spacing="2">
                                                                             <TextBlock Text="{Binding MatchNumber, StringFormat='Match {0}'}" FontSize="12" FontWeight="SemiBold" Foreground="#1F2937"/>
                                                                             <TextBlock Text="{Binding PlayedOn, StringFormat='Date: {0:d}'}" FontSize="12" Foreground="#1F2937"/>
-                                                                            <TextBlock Text="{Binding WhitePlayerId, StringFormat='White: {0}'}" FontSize="12" Foreground="#1F2937"/>
-                                                                            <TextBlock Text="{Binding BlackPlayerId, StringFormat='Black: {0}'}" FontSize="12" Foreground="#1F2937"/>
-                                                                            <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                                                            <StackPanel Spacing="2">
+                                                                                <TextBlock>
+                                                                                    <TextBlock.Text>
+                                                                                        <MultiBinding Converter="{StaticResource PlayerNameLabelConverter}" ConverterParameter="White">
+                                                                                            <Binding Path="WhitePlayerId"/>
+                                                                                            <Binding Path="DataContext.Players" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                                        </MultiBinding>
+                                                                                    </TextBlock.Text>
+                                                                                </TextBlock>
+                                                                                <TextBlock>
+                                                                                    <TextBlock.Text>
+                                                                                        <MultiBinding Converter="{StaticResource PlayerNameLabelConverter}" ConverterParameter="Black">
+                                                                                            <Binding Path="BlackPlayerId"/>
+                                                                                            <Binding Path="DataContext.Players" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                                        </MultiBinding>
+                                                                                    </TextBlock.Text>
+                                                                                </TextBlock>
+                                                                                <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" FontSize="12" Foreground="#7F8C8D"/>
+                                                                            </StackPanel>
                                                                         </StackPanel>
                                                                     </Border>
                                                                 </Button>
@@ -422,7 +447,7 @@
                                            FontSize="20"
                                            FontWeight="Bold"
                                            Foreground="#1F2937"/>
-                                <TextBlock Text="Clear everything from the database. This action is irreversible."
+                                <TextBlock Text="Clear everything from the database. Includes rules, moves and ranking method. This action is irreversible."
                                            FontSize="14"
                                            Foreground="#4B5563"/>
                             </StackPanel>
@@ -444,14 +469,88 @@
                         </Grid>
                     </Border>
                     <Border Grid.Row="1"
-                            Background="#F7F9FA"
+                            Background="#FFFFFF"
                             Padding="16"
                             CornerRadius="8"
                             BorderBrush="#D0D7DE"
                             BorderThickness="1">
-                        <TextBlock Text="No reset action wired yet."
-                                   FontSize="14"
-                                   Foreground="#4B5563"/>
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Settings change"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#1F2937"/>
+                            <TextBlock Text="It is advised to delete all previous data to avoid problems with stacking"
+                                       FontWeight="SemiBold"
+                                       Foreground="#922B21"/>
+
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Program name" FontWeight="SemiBold" FontSize="14" Foreground="#1F2937"/>
+                                <TextBox Text="{Binding EditableProgramName}" Height="32" />
+
+                                <TextBlock Text="Ranking name" FontWeight="SemiBold" FontSize="14" Foreground="#1F2937"/>
+                                <TextBox Text="{Binding EditableRankingName}" Height="32" />
+                            </StackPanel>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <StackPanel Grid.Column="0" Spacing="8">
+                                    <TextBlock Text="Move pieces" FontWeight="SemiBold" FontSize="14" Foreground="#1F2937"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBox Width="180" Text="{Binding NewMovePiece}" Watermark="Add piece"/>
+                                        <Button Content="Add" Command="{Binding AddMovePieceCommand}" MinWidth="60"/>
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding EditableMovePieces}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:CompileBindings="False">
+                                                <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2">
+                                                    <TextBox Text="{Binding .}" Width="180"/>
+                                                    <Button Content="Remove"
+                                                            Command="{Binding DataContext.RemoveMovePieceCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding .}"
+                                                            MinWidth="70"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="8">
+                                    <TextBlock Text="Move squares" FontWeight="SemiBold" FontSize="14" Foreground="#1F2937"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBox Width="180" Text="{Binding NewMoveSquare}" Watermark="Add square (e.g. E4)"/>
+                                        <Button Content="Add" Command="{Binding AddMoveSquareCommand}" MinWidth="60"/>
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding EditableMoveSquares}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:CompileBindings="False">
+                                                <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2">
+                                                    <TextBox Text="{Binding .}" Width="120"/>
+                                                    <Button Content="Remove"
+                                                            Command="{Binding DataContext.RemoveMoveSquareCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding .}"
+                                                            MinWidth="70"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="Submit settings"
+                                        Command="{Binding ToggleSettingsConfirmationCommand}"
+                                        Height="32"
+                                        MinWidth="140"
+                                        Background="#C0392B"
+                                        Foreground="White"/>
+                                <Button Content="Are you sure ?"
+                                        Command="{Binding SaveSettingsCommand}"
+                                        Height="32"
+                                        MinWidth="140"
+                                        Background="#922B21"
+                                        Foreground="White"
+                                        IsVisible="{Binding ShowSettingsConfirmation}"/>
+                            </StackPanel>
+                        </StackPanel>
                     </Border>
                 </Grid>
 
@@ -479,15 +578,14 @@
                                                 <DataTemplate x:DataType="model:Player">
                                                     <TextBlock>
                                                         <TextBlock.Text>
-                                                            <MultiBinding StringFormat="{}{0}, {1}, {2}">
-                                                                <Binding Path="LastName"/>
-                                                                <Binding Path="FirstName"/>
-                                                                <Binding Path="ShortId"/>
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-                                                </DataTemplate>
-                                            </ComboBox.ItemTemplate>
+                                                        <MultiBinding StringFormat="{}{0}, {1}">
+                                                            <Binding Path="LastName"/>
+                                                            <Binding Path="FirstName"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
                                         </ComboBox>
                                     </StackPanel>
                                     <StackPanel Width="240" Spacing="8">
@@ -498,15 +596,14 @@
                                                 <DataTemplate x:DataType="model:Player">
                                                     <TextBlock>
                                                         <TextBlock.Text>
-                                                            <MultiBinding StringFormat="{}{0}, {1}, {2}">
-                                                                <Binding Path="LastName"/>
-                                                                <Binding Path="FirstName"/>
-                                                                <Binding Path="ShortId"/>
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-                                                </DataTemplate>
-                                            </ComboBox.ItemTemplate>
+                                                        <MultiBinding StringFormat="{}{0}, {1}">
+                                                            <Binding Path="LastName"/>
+                                                            <Binding Path="FirstName"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
                                         </ComboBox>
                                     </StackPanel>
                                     <StackPanel VerticalAlignment="Bottom">

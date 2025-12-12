@@ -15,7 +15,7 @@ public partial class SelectablePlayer : ObservableObject
     public SelectablePlayer(Player player) => Player = player;
     public Player Player { get; }
     public Guid Id => Player.Id;
-    public string Display => $"{Player.LastName}, {Player.FirstName}, {Player.ShortId}";
+    public string Display => $"{Player.LastName}, {Player.FirstName}";
 
     [ObservableProperty]
     private bool isSelected;
@@ -64,6 +64,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool showResetConfirmation;
+
+    [ObservableProperty]
+    private bool showSettingsConfirmation;
 
     [ObservableProperty]
     private Game? selectedGame;
@@ -126,6 +129,25 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private Player? selectedMovePlayer;
 
+    // Settings editor fields
+    [ObservableProperty]
+    private string editableProgramName = string.Empty;
+
+    [ObservableProperty]
+    private string editableRankingName = string.Empty;
+
+    [ObservableProperty]
+    private ObservableCollection<string> editableMovePieces = new();
+
+    [ObservableProperty]
+    private ObservableCollection<string> editableMoveSquares = new();
+
+    [ObservableProperty]
+    private string newMovePiece = string.Empty;
+
+    [ObservableProperty]
+    private string newMoveSquare = string.Empty;
+
     public MainWindowViewModel() : this(new DataManager())
     {
     }
@@ -143,6 +165,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Players.Select(p => new SelectablePlayer(p)));
         MovePieces = new ObservableCollection<string>(_data.Settings.MovePieces);
         MoveSquares = new ObservableCollection<string>(_data.Settings.MoveSquares);
+        LoadSettingsEditors();
 
         Players.CollectionChanged += (_, _) => RefreshComputedLists();
         Competitions.CollectionChanged += (_, _) => RefreshComputedLists();
@@ -170,7 +193,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}, {p.ShortId}";
+    public static string FormatPlayerDisplay(Player p) => $"{p.LastName}, {p.FirstName}";
 
     private void SetPage(
         string text,
@@ -256,6 +279,86 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ToggleSettingsConfirmation()
+    {
+        ShowSettingsConfirmation = !ShowSettingsConfirmation;
+    }
+
+    [RelayCommand]
+    private async Task SaveSettings()
+    {
+        if (string.IsNullOrWhiteSpace(EditableProgramName))
+        {
+            EditableProgramName = _data.Settings.ProgramName;
+        }
+        if (string.IsNullOrWhiteSpace(EditableRankingName))
+        {
+            EditableRankingName = _data.Settings.RankingName;
+        }
+
+        _data.Settings.ProgramName = EditableProgramName.Trim();
+        _data.Settings.RankingName = EditableRankingName.Trim();
+        _data.Settings.MovePieces = EditableMovePieces.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToList();
+        _data.Settings.MoveSquares = EditableMoveSquares.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim().ToUpperInvariant()).ToList();
+        _data.Settings.EnsureDefaults();
+
+        // Refresh live collections/bindings
+        MovePieces.Clear();
+        foreach (var p in _data.Settings.MovePieces)
+        {
+            MovePieces.Add(p);
+        }
+        MoveSquares.Clear();
+        foreach (var s in _data.Settings.MoveSquares)
+        {
+            MoveSquares.Add(s);
+        }
+
+        OnPropertyChanged(nameof(ProgramName));
+        OnPropertyChanged(nameof(RankingName));
+        OnPropertyChanged(nameof(TopRankingPlayersTitle));
+        OnPropertyChanged(nameof(RankingHistoryTitle));
+        OnPropertyChanged(nameof(CurrentRankingWatermark));
+
+        await DataFileService.SaveAsync(_data);
+        ShowSettingsConfirmation = false;
+    }
+
+    [RelayCommand]
+    private void AddMovePiece()
+    {
+        if (string.IsNullOrWhiteSpace(NewMovePiece))
+        {
+            return;
+        }
+        EditableMovePieces.Add(NewMovePiece.Trim());
+        NewMovePiece = string.Empty;
+    }
+
+    [RelayCommand]
+    private void AddMoveSquare()
+    {
+        if (string.IsNullOrWhiteSpace(NewMoveSquare))
+        {
+            return;
+        }
+        EditableMoveSquares.Add(NewMoveSquare.Trim().ToUpperInvariant());
+        NewMoveSquare = string.Empty;
+    }
+
+    [RelayCommand]
+    private void RemoveMovePiece(string piece)
+    {
+        EditableMovePieces.Remove(piece);
+    }
+
+    [RelayCommand]
+    private void RemoveMoveSquare(string square)
+    {
+        EditableMoveSquares.Remove(square);
+    }
+
+    [RelayCommand]
     private void ShowGameDetail(Game game)
     {
         SelectedGame = game;
@@ -290,6 +393,7 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedGame.WhitePlayerId = SelectedWhitePlayer.Id;
         SelectedGame.BlackPlayerId = SelectedBlackPlayer.Id;
         RefreshMovePlayers();
+        _ = PersistDataAsync();
     }
 
     [RelayCommand]
@@ -327,6 +431,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // After saving, start fresh with a single empty row.
         MoveForms.Clear();
         AddMoveRow();
+        _ = PersistDataAsync();
     }
 
     [RelayCommand]
@@ -359,6 +464,8 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             sp.IsSelected = false;
         }
+
+        _ = PersistDataAsync();
     }
 
     private IEnumerable<Player> GetRegisteredPlayersForCompetition(Guid competitionId)
@@ -395,6 +502,7 @@ public partial class MainWindowViewModel : ViewModelBase
         NewElo = 1500;
 
         RefreshComputedLists();
+        _ = PersistDataAsync();
     }
 
     // For now, saving just reuses the add logic; replace with persistence later.
@@ -467,6 +575,7 @@ public partial class MainWindowViewModel : ViewModelBase
         NewCompetitionMatchCount = 1;
 
         RefreshComputedLists();
+        _ = PersistDataAsync();
     }
 
     private void RefreshMovePlayers()
@@ -496,5 +605,26 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(UpcomingCompetitions));
         OnPropertyChanged(nameof(TopPlayers));
+    }
+
+    private void LoadSettingsEditors()
+    {
+        EditableProgramName = _data.Settings.ProgramName;
+        EditableRankingName = _data.Settings.RankingName;
+
+        EditableMovePieces = new ObservableCollection<string>(_data.Settings.MovePieces);
+        EditableMoveSquares = new ObservableCollection<string>(_data.Settings.MoveSquares);
+    }
+
+    private void SyncDataToModel()
+    {
+        _data.Players = Players.ToList();
+        _data.Competitions = Competitions.ToList();
+    }
+
+    private async Task PersistDataAsync()
+    {
+        SyncDataToModel();
+        await DataFileService.SaveAsync(_data);
     }
 }

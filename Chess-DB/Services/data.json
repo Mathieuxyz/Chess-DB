@@ -1,6 +1,134 @@
 {
-  "Players": [],
-  "Competitions": [],
+  "Players": [
+    {
+      "Id": "b6c2cbb4-f7ef-4c1a-8ef4-f7f9bed249d4",
+      "ShortId": "b6c2cbb4",
+      "FirstName": "Mathieu",
+      "LastName": "Rodri",
+      "DateOfBirth": "0001-01-01T00:00:00",
+      "Email": "mathieu.tutu@outlook.com",
+      "PhoneNumber": "0456893234",
+      "CurrentElo": 1600,
+      "EloRatings": [],
+      "Registrations": []
+    }
+  ],
+  "Competitions": [
+    {
+      "Id": "fb331b8d-70cf-4d95-a643-5e604723e837",
+      "Name": "Chess contest example",
+      "StartDate": "2025-12-11T00:00:00",
+      "EndDate": "2025-12-12T00:00:00",
+      "Registrations": [],
+      "Games": [
+        {
+          "Id": "85b08f84-ade5-424d-8ff4-47f0ba8640ab",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "b6c2cbb4-f7ef-4c1a-8ef4-f7f9bed249d4",
+          "BlackPlayerId": "b6c2cbb4-f7ef-4c1a-8ef4-f7f9bed249d4",
+          "MatchNumber": 1,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": [
+            {
+              "MoveNumber": 1,
+              "Notation": "Queen A2 (b6c2cbb4)"
+            }
+          ]
+        },
+        {
+          "Id": "85fc5604-d171-4593-b2b9-7954b123fa4d",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 2,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "13ab5b44-c0aa-4876-a795-8923a95fb72a",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 3,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "536186e8-5866-41d3-a782-26d8c93bbc98",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 4,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "140444ee-8b95-498a-bba1-a803966b0be4",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 5,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "acc7b3d1-a8c4-4624-8bc1-0717e7ce5b97",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 6,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "9ea9e96c-2221-4af1-b685-528e9cbb86e6",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 7,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "b42e1ff1-e219-4f5e-a716-1a875ebbab31",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 8,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "83b83476-e124-4e6b-aca7-06eaf5f7eb96",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 9,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        },
+        {
+          "Id": "f1d9ad62-2e87-41ee-ab8e-9de6eada0e57",
+          "CompetitionId": "fb331b8d-70cf-4d95-a643-5e604723e837",
+          "WhitePlayerId": "00000000-0000-0000-0000-000000000000",
+          "BlackPlayerId": "00000000-0000-0000-0000-000000000000",
+          "MatchNumber": 10,
+          "Result": 3,
+          "PlayedOn": "2025-12-11T00:00:00",
+          "Moves": []
+        }
+      ]
+    }
+  ],
   "Settings": {
     "ProgramName": "Chess contest manager",
     "RankingName": "ELO",
