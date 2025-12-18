@@ -1,5 +1,8 @@
 # Chess-DB
 
+Franchimont Mathieu : 23363
+Mastrogiovanni Amedeo : 23046
+
 ## Introduction 
 
 Chess-DB est une application développée en C# utilisant le framework graphique Avalonia UI. L'objectif principal de ce logiciel est d'offrir une solution de gestion pour une fédération ou un club d'échecs utilisant un système "d'Elo", déjà largement répandu dans la communauté. L'application se concentre sur trois fonctionnalités principales :
@@ -36,3 +39,7 @@ Nous avons veillé à respecter les bonnes pratiques de développement, notammen
 ## Diagramme d'activité
 
 ![Notre diagramme d'activité](activity_diagram.png)
+
+## Conclusion
+
+En conclusion, Chess-DB constitue une solution complète et évolutive pour la gestion d’une fédération ou d’un club d’échecs. Grâce à une architecture claire, au respect des principes SOLID et à l’utilisation d’Avalonia UI, l’application se veut à la fois maintenable, intuitive et adaptable. Les fonctionnalités développées répondent aux besoins essentiels de gestion des joueurs, des tournois et des parties, tout en offrant une valeur ajoutée avec un affichage interactif et un classement dynamique.
