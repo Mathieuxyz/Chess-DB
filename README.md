@@ -14,7 +14,7 @@ Nous avons développé un affichage interactif permettant à l'utilisateur de vo
 
 ## Adaptabilité à d'autres fédérations 
 
-Hormis l'encodage des parties, notre application est tout à fait adaptable pour d'autres fédérations, tant sportives que récréatives.
+Hormis l'encodage des parties, notre application est tout à fait adaptable pour d'autres fédérations, tant sportives que récréatives. Limité à des jeux ou les coups/actions peuvent-être encodées, il est possible de régler le programme dans l'onglet settings de l'application. Permettant de changer les actions à enregistrer et de réinitialiser la base de données.
 
 ## Principes SOLID au sein de notre projet
 
