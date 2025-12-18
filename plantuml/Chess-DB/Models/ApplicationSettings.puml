@@ -1,0 +1,13 @@
+@startuml
+class ApplicationSettings {
+    + ProgramName : string <<get>> <<set>> = "Chess contest manager"
+    + RankingName : string <<get>> <<set>> = "ELO"
+    + EnsureDefaults() : void
+    + {static} CreateDefaultPieces() : List<string>
+    + {static} CreateDefaultSquares() : List<string>
+}
+class "List`1"<T> {
+}
+ApplicationSettings o-> "MovePieces<string>" "List`1"
+ApplicationSettings o-> "MoveSquares<string>" "List`1"
+@enduml

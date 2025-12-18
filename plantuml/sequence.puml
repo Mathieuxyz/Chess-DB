@@ -1,0 +1,34 @@
+@startuml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
+
+actor "Utilisateur" as User
+participant "MainView (UI)" as View
+participant "MainViewModel" as VM
+participant "DatabaseService" as DB
+database "ChessDB.sqlite" as SQLite
+
+== Enregistrement d'une partie ==
+User -> View : Saisit les infos (Joueurs, Résultat, Date)
+User -> View : Clique sur "Enregistrer"
+View -> VM : AddGameCommand(GameData)
+
+VM -> VM : ValidateForm()
+note right: Vérifie que les champs \nne sont pas vides
+
+VM -> DB : SaveGame(gameObj)
+activate DB
+
+DB -> SQLite : INSERT INTO Games (...)
+activate SQLite
+SQLite --> DB : Success
+deactivate SQLite
+
+DB --> VM : Confirmation de sauvegarde
+deactivate DB
+
+VM -> VM : RefreshList()
+VM -> View : Notification "Partie ajoutée"
+View --> User : Affiche la partie dans la liste
+
+@enduml

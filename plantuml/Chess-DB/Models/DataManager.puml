@@ -1,0 +1,13 @@
+@startuml
+class DataManager {
+    + EnsureDefaults() : void
+    + Save() : void
+    + {static} Load() : DataManager
+    + UpdateEloAfterGame(game:Game) : void
+}
+class "List`1"<T> {
+}
+DataManager o-> "Players<Player>" "List`1"
+DataManager o-> "Competitions<Competition>" "List`1"
+DataManager o-> "Settings" ApplicationSettings
+@enduml

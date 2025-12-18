@@ -1,0 +1,12 @@
+@startuml
+class Competition {
+    + Name : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Competition o-> "Id" Guid
+Competition --> "StartDate" DateTime
+Competition --> "EndDate" DateTime
+Competition o-> "Registrations<Registration>" "List`1"
+Competition o-> "Games<Game>" "List`1"
+@enduml

@@ -1,0 +1,169 @@
+@startuml
+class App <<partial>> {
+    + App()
+    + <<override>> Initialize() : void
+    + <<override>> OnFrameworkInitializationCompleted() : void
+}
+Application <|-- App
+class Program <<sealed>> {
+    + {static} Main(args:string[]) : void
+    + {static} BuildAvaloniaApp() : AppBuilder
+}
+class ViewLocator {
+    + Build(param:object?) : Control?
+    + Match(data:object?) : bool
+}
+IDataTemplate <|-- ViewLocator
+abstract class ViewModelBase {
+}
+ObservableObject <|-- ViewModelBase
+class PlayerNameLabelConverter {
+    + Convert(values:IList<object?>, targetType:Type, parameter:object?, culture:CultureInfo) : object?
+    + ConvertBack(value:object?, targetTypes:Type[], parameter:object?, culture:CultureInfo) : object?[]
+}
+IMultiValueConverter <|-- PlayerNameLabelConverter
+class ApplicationSettings {
+    + ProgramName : string <<get>> <<set>> = "Chess contest manager"
+    + RankingName : string <<get>> <<set>> = "ELO"
+    + EnsureDefaults() : void
+    + {static} CreateDefaultPieces() : List<string>
+    + {static} CreateDefaultSquares() : List<string>
+}
+class "List`1"<T> {
+}
+ApplicationSettings o-> "MovePieces<string>" "List`1"
+ApplicationSettings o-> "MoveSquares<string>" "List`1"
+class Competition {
+    + Name : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Competition o-> "Id" Guid
+Competition --> "StartDate" DateTime
+Competition --> "EndDate" DateTime
+Competition o-> "Registrations<Registration>" "List`1"
+Competition o-> "Games<Game>" "List`1"
+class DataManager {
+    + EnsureDefaults() : void
+    + Save() : void
+    + {static} Load() : DataManager
+    + UpdateEloAfterGame(game:Game) : void
+}
+class "List`1"<T> {
+}
+DataManager o-> "Players<Player>" "List`1"
+DataManager o-> "Competitions<Competition>" "List`1"
+DataManager o-> "Settings" ApplicationSettings
+class EloRating {
+    + Rating : double <<get>> <<set>>
+}
+EloRating --> "Date" DateTime
+class Game {
+    + MatchNumber : int <<get>> <<set>>
+}
+enum GameResult {
+    WhiteWin,
+    BlackWin,
+    Draw,
+    NotPlayedYet,
+}
+class "ObservableCollection`1"<T> {
+}
+Game o-> "Id" Guid
+Game --> "CompetitionId" Guid
+Game --> "WhitePlayerId" Guid
+Game --> "BlackPlayerId" Guid
+Game o-> "Result" GameResult
+Game o-> "PlayedOn" DateTime
+Game o-> "Moves<Move>" "ObservableCollection`1"
+class Move {
+    + MoveNumber : int <<get>> <<set>>
+    + Notation : string <<get>> <<set>>
+}
+class Player {
+    + ShortId : string <<get>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+    + CurrentElo : double <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Player --> "Id" Guid
+Player --> "DateOfBirth" DateTime
+Player o-> "EloRatings<EloRating>" "List`1"
+Player o-> "Registrations<Registration>" "List`1"
+class Registration {
+}
+enum RegistrationStatus {
+    Active,
+    Withdrawn,
+    Suspended,
+    Pending,
+    Completed,
+}
+Registration --> "PlayerId" Guid
+Registration --> "CompetitionId" Guid
+Registration o-> "Status" RegistrationStatus
+class DataFileService <<static>> {
+    + {static} <<async>> LoadAsync() : Task<DataManager>
+    + {static} <<async>> SaveAsync(data:DataManager) : Task
+}
+class SelectablePlayer <<partial>> {
+    + SelectablePlayer(player:Player)
+    + Display : string <<get>>
+}
+class MoveForm <<partial>> {
+}
+class WinnerChoice {
+    + Label : string <<get>> <<set>>
+}
+class MainWindowViewModel <<partial>> {
+    + ProgramName : string <<get>>
+    + RankingName : string <<get>>
+    + TopRankingPlayersTitle : string <<get>>
+    + RankingHistoryTitle : string <<get>>
+    + CurrentRankingWatermark : string <<get>>
+    + MainWindowViewModel()
+    + MainWindowViewModel(data:DataManager)
+    + {static} FormatPlayerDisplay(p:Player) : string
+}
+class "ObservableCollection`1"<T> {
+}
+class "IEnumerable`1"<T> {
+}
+ObservableObject <|-- SelectablePlayer
+SelectablePlayer --> "Player" Player
+SelectablePlayer --> "Id" Guid
+ObservableObject <|-- MoveForm
+WinnerChoice --> "Result" GameResult
+ViewModelBase <|-- MainWindowViewModel
+MainWindowViewModel o-> "WinnerChoices<WinnerChoice>" "ObservableCollection`1"
+MainWindowViewModel --> "Players<Player>" "ObservableCollection`1"
+MainWindowViewModel --> "Competitions<Competition>" "ObservableCollection`1"
+MainWindowViewModel --> "Registrations<Registration>" "ObservableCollection`1"
+MainWindowViewModel --> "RegistrablePlayers<SelectablePlayer>" "ObservableCollection`1"
+MainWindowViewModel o-> "RegisteredGamePlayers<Player>" "ObservableCollection`1"
+MainWindowViewModel o-> "MovePlayers<Player>" "ObservableCollection`1"
+MainWindowViewModel o-> "MoveForms<MoveForm>" "ObservableCollection`1"
+MainWindowViewModel --> "MovePieces<string>" "ObservableCollection`1"
+MainWindowViewModel --> "MoveSquares<string>" "ObservableCollection`1"
+MainWindowViewModel --> "UpcomingCompetitions<Competition>" "IEnumerable`1"
+MainWindowViewModel --> "TopPlayers<Player>" "IEnumerable`1"
+abstract class ViewModelBase {
+}
+ObservableObject <|-- ViewModelBase
+class MainWindow <<partial>> {
+    + MainWindow()
+}
+Window <|-- MainWindow
+class CompetitionWindow <<partial>> {
+    + CompetitionWindow()
+}
+Window <|-- CompetitionWindow
+class PlayersPage {
+    + PlayersPage()
+}
+UserControl <|-- PlayersPage
+@enduml

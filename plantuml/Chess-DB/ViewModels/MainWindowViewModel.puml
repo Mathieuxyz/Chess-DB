@@ -1,0 +1,43 @@
+@startuml
+class SelectablePlayer <<partial>> {
+    + SelectablePlayer(player:Player)
+    + Display : string <<get>>
+}
+class MoveForm <<partial>> {
+}
+class WinnerChoice {
+    + Label : string <<get>> <<set>>
+}
+class MainWindowViewModel <<partial>> {
+    + ProgramName : string <<get>>
+    + RankingName : string <<get>>
+    + TopRankingPlayersTitle : string <<get>>
+    + RankingHistoryTitle : string <<get>>
+    + CurrentRankingWatermark : string <<get>>
+    + MainWindowViewModel()
+    + MainWindowViewModel(data:DataManager)
+    + {static} FormatPlayerDisplay(p:Player) : string
+}
+class "ObservableCollection`1"<T> {
+}
+class "IEnumerable`1"<T> {
+}
+ObservableObject <|-- SelectablePlayer
+SelectablePlayer --> "Player" Player
+SelectablePlayer --> "Id" Guid
+ObservableObject <|-- MoveForm
+WinnerChoice --> "Result" GameResult
+ViewModelBase <|-- MainWindowViewModel
+MainWindowViewModel o-> "WinnerChoices<WinnerChoice>" "ObservableCollection`1"
+MainWindowViewModel --> "Players<Player>" "ObservableCollection`1"
+MainWindowViewModel --> "Competitions<Competition>" "ObservableCollection`1"
+MainWindowViewModel --> "Registrations<Registration>" "ObservableCollection`1"
+MainWindowViewModel --> "RegistrablePlayers<SelectablePlayer>" "ObservableCollection`1"
+MainWindowViewModel o-> "RegisteredGamePlayers<Player>" "ObservableCollection`1"
+MainWindowViewModel o-> "MovePlayers<Player>" "ObservableCollection`1"
+MainWindowViewModel o-> "MoveForms<MoveForm>" "ObservableCollection`1"
+MainWindowViewModel --> "MovePieces<string>" "ObservableCollection`1"
+MainWindowViewModel --> "MoveSquares<string>" "ObservableCollection`1"
+MainWindowViewModel --> "UpcomingCompetitions<Competition>" "IEnumerable`1"
+MainWindowViewModel --> "TopPlayers<Player>" "IEnumerable`1"
+@enduml

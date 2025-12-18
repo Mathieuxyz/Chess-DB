@@ -1,0 +1,6 @@
+@startuml
+class DataFileService <<static>> {
+    + {static} <<async>> LoadAsync() : Task<DataManager>
+    + {static} <<async>> SaveAsync(data:DataManager) : Task
+}
+@enduml

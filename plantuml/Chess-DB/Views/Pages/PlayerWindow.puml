@@ -1,0 +1,6 @@
+@startuml
+class PlayersPage {
+    + PlayersPage()
+}
+UserControl <|-- PlayersPage
+@enduml

@@ -24,3 +24,15 @@ Nous avons veillé à respecter les bonnes pratiques de développement, notammen
  Nous avons séparé les responsabilités pour rendre le code plus maintenable. Par exemple, nos modèles (ex: `Player`) ne contiennent que les données, la logique d'affichage est gérée par le `MainWindowViewModel`, et la sauvegarde des fichiers est déléguée à un service dédié (`DataFileService`).
 ### Dependency Inversion Principle (DIP) :
  Pour réduire le couplage entre nos classes, nous utilisons l'injection de dépendances. Le `MainWindowViewModel` ne crée pas ses propres données en dur, mais reçoit le `DataManager` via son constructeur, ce qui rend l'application plus modulaire et testable.
+
+## Diagramme de classes
+
+![Notre diagramme de classes](class_diagram.png)
+
+## Diagramme de sequence
+
+![Notre diagramme de sequence](sequence_diagram.png)
+
+## Diagramme d'activité
+
+![Notre diagramme d'activité](activity_diagram.png)

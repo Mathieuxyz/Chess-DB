@@ -1,0 +1,16 @@
+@startuml
+class Player {
+    + ShortId : string <<get>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+    + CurrentElo : double <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Player --> "Id" Guid
+Player --> "DateOfBirth" DateTime
+Player o-> "EloRatings<EloRating>" "List`1"
+Player o-> "Registrations<Registration>" "List`1"
+@enduml

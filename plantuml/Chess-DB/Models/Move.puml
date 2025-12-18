@@ -1,0 +1,6 @@
+@startuml
+class Move {
+    + MoveNumber : int <<get>> <<set>>
+    + Notation : string <<get>> <<set>>
+}
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class EloRating {
+    + Rating : double <<get>> <<set>>
+}
+EloRating --> "Date" DateTime
+@enduml

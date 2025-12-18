@@ -1,0 +1,20 @@
+@startuml
+class Game {
+    + MatchNumber : int <<get>> <<set>>
+}
+enum GameResult {
+    WhiteWin,
+    BlackWin,
+    Draw,
+    NotPlayedYet,
+}
+class "ObservableCollection`1"<T> {
+}
+Game o-> "Id" Guid
+Game --> "CompetitionId" Guid
+Game --> "WhitePlayerId" Guid
+Game --> "BlackPlayerId" Guid
+Game o-> "Result" GameResult
+Game o-> "PlayedOn" DateTime
+Game o-> "Moves<Move>" "ObservableCollection`1"
+@enduml

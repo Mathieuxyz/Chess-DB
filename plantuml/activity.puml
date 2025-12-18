@@ -1,0 +1,29 @@
+@startuml
+title Processus d'ajout d'une partie dans Chess-DB
+
+start
+
+:L'utilisateur ouvre le formulaire d'ajout;
+:Saisie des métadonnées (Blancs, Noirs, Date, Résultat);
+
+if (Champs obligatoires remplis ?) then (non)
+  :Afficher un message d'erreur;
+  :Mettre les champs vides en évidence;
+  stop
+else (oui)
+  :Préparation de l'objet Game;
+  :Ouverture de la connexion SQLite;
+  
+  if (La base de données est accessible ?) then (oui)
+    :Exécuter la requête INSERT INTO;
+    :Confirmer l'enregistrement;
+    :Rafraîchir la liste principale;
+    :Afficher notification de succès;
+  else (non)
+    :Afficher "Erreur de connexion à la base";
+  endif
+  
+endif
+
+stop
+@enduml

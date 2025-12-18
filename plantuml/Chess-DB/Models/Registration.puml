@@ -1,0 +1,14 @@
+@startuml
+class Registration {
+}
+enum RegistrationStatus {
+    Active,
+    Withdrawn,
+    Suspended,
+    Pending,
+    Completed,
+}
+Registration --> "PlayerId" Guid
+Registration --> "CompetitionId" Guid
+Registration o-> "Status" RegistrationStatus
+@enduml

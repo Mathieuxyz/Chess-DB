@@ -1,0 +1,6 @@
+@startuml
+class Program <<sealed>> {
+    + {static} Main(args:string[]) : void
+    + {static} BuildAvaloniaApp() : AppBuilder
+}
+@enduml
